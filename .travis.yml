@@ -1,0 +1,16 @@
+language: java
+jdk:
+  - oraclejdk8
+
+sudo: false
+install: true
+
+script:
+  - cd csye6225-spring-boot-starter-webapp-master
+  - gradle build
+
+
+notifications:
+  email:
+    recipients:
+      - shetye.v@husky.neu.edu
