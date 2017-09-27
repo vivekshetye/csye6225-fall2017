@@ -59,7 +59,8 @@ dependencies {
     runtime('mysql:mysql-connector-java')
 
     providedRuntime('org.springframework.boot:spring-boot-starter-tomcat')
-
+    
+    testCompile('junit:junit:4.12')
     testCompile('io.rest-assured:rest-assured:3.0.3')
     testCompile('org.springframework.boot:spring-boot-starter-test')
     testCompile('org.springframework.security:spring-security-test')
