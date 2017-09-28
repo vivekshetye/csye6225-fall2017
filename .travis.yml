@@ -22,4 +22,7 @@ notifications:
   email:
     recipients:
       - shetye.v@husky.neu.edu
+      - patil.m@husky.neu.edu
+      - khedekar.p@husky.neu.edu
+      - takekar.a@husky.neu.edu
     on_success: always 
