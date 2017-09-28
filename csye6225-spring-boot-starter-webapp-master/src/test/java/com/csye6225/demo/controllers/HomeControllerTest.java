@@ -45,16 +45,18 @@ public class HomeControllerTest {
     public void setup() {
 //        this.mockMvc = MockMvcBuilders.standaloneSetup(new HomeController()).build();
         MockitoAnnotations.initMocks(this);
-    }
 
-    @Test
-    public void register() throws Exception {
         User createUser = new User();
         createUser.setEmail("vivek");
         createUser.setPassword("vivek");
 //        userRepository.save(createUser);
 
         when(userRepository.findByEmail("vivek")).thenReturn(createUser);
+    }
+
+    @Test
+    public void register() throws Exception {
+
         User retrievedUser = userRepository.findByEmail("vivek");
         assertEquals(retrievedUser.getEmail(),"vivek");
     }

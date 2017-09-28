@@ -9,10 +9,10 @@ import java.net.URISyntaxException;
 
 public class RestAssuredDemoApiTest {
 
-  @Test
-  public void defaultTest() {
-    System.out.println("---------******Demo test******--------------");
-  }
+//  @Test
+//  public void defaultTest() {
+//    System.out.println("---------******Demo test******--------------");
+//  }
 
   @Ignore
   @Test
@@ -20,9 +20,6 @@ public class RestAssuredDemoApiTest {
     RestAssured.when().get(new URI("http://localhost:8080/")).then().statusCode(200);
   }
 
-  @Test
-  public void failTest() {
-    assert(true);
-  }
+
 
 }
