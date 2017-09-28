@@ -20,4 +20,9 @@ public class RestAssuredDemoApiTest {
     RestAssured.when().get(new URI("http://localhost:8080/")).then().statusCode(200);
   }
 
+  @Test
+  public void failTest() {
+    assert(false);
+  }
+
 }

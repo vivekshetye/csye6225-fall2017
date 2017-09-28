@@ -7,7 +7,8 @@ install: true
 
 script:
   - cd csye6225-spring-boot-starter-webapp-master
-  - gradle build
+  - ./gradlew war
+  - ./gradlew test
 
 
 notifications:
