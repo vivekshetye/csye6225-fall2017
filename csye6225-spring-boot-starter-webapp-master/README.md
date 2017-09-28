@@ -89,5 +89,5 @@ this will all unit and integration tests
  
 #Link to TravisCI build for the project.
 ``` bash
-https://s3.amazonaws.com/archive.travis-ci.com/jobs/92417908/log.txt?AWSAccessKeyId=AKIAIETBFLRWUUPRBPHA&Expires=1506628085&Signature=rTRpkzVC1as2NAo2yIaNUfP0CS8%3D
+https://travis-ci.com/vivekshetye/csye6225-fall2017/builds/55708703
 ```
