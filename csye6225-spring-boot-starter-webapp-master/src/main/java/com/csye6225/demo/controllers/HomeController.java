@@ -26,6 +26,7 @@ import java.util.Date;
  * Atul Takekar,    001220479, takekar.a@husky.neu.edu
  **/
 
+
 @Controller
 public class HomeController {
 
@@ -39,24 +40,22 @@ public class HomeController {
   public String welcome(HttpServletRequest request, HttpServletResponse response){
 
     JsonObject jsonObject = new JsonObject();
-    //Authentication auth = SecurityContextHolder.getContext().getAuthentication();
     String header = request.getHeader("Authorization");
     if (header != null && header.contains("Basic")) {
-      assert header.substring(0, 6).equals("Basic");
-      String basicAuthEncoded = header.substring(6);
-      String basicAuthAsString = new String(Base64.getDecoder().decode(basicAuthEncoded.getBytes()));
-      final String[] credentialValues = basicAuthAsString.split(":", 2);
+      String[] credentialValues= decode(header);
+
       User userExists = userService.findUserByEmail(credentialValues[0]);
-        if (userExists != null) {
-          BCryptPasswordEncoder encoder = new BCryptPasswordEncoder();
-          if (encoder.matches(credentialValues[1], userExists.getPassword()) || credentialValues[1].equals(userExists.getPassword()))
-            jsonObject.addProperty("message", "You are logged in. Current time is: " + new Date().toString());
-          else
-            jsonObject.addProperty("message", "Incorrect credentials");
-        } else {
-            jsonObject.addProperty("message", "Incorrect credentials");
-        }
+      if (userExists != null) {
+        BCryptPasswordEncoder encoder = new BCryptPasswordEncoder();
+
+        if (encoder.matches(credentialValues[1], userExists.getPassword()) || credentialValues[1].equals(userExists.getPassword()))
+          jsonObject.addProperty("message", "You are logged in. Current time is: " + new Date().toString());
+        else
+          jsonObject.addProperty("message", "Incorrect credentials");
       } else {
+        jsonObject.addProperty("message", "Incorrect credentials");
+      }
+    } else {
       jsonObject.addProperty("message", "You are not logged in !!");
     }
     return jsonObject.toString();
@@ -79,6 +78,14 @@ public class HomeController {
       jsonObject.addProperty("password", createUser.getPassword());
     }
     return jsonObject.toString();
+  }
+
+  public String[] decode(String header){
+    assert header.substring(0, 6).equals("Basic");
+    String basicAuthEncoded = header.substring(6);
+    String basicAuthAsString = new String(Base64.getDecoder().decode(basicAuthEncoded.getBytes()));
+    final String[] credentialValues = basicAuthAsString.split(":", 2);
+    return  credentialValues;
   }
 
 }
