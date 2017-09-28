@@ -22,3 +22,4 @@ notifications:
   email:
     recipients:
       - shetye.v@husky.neu.edu
+    on_success: always 

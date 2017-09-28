@@ -14,8 +14,11 @@ install: true
 
 script:
   - ./gradlew war
+  - ./gradlew test
+
 
 notifications:
   email:
     recipients:
-      - t.parikh@northeastern.edu
+      - shetye.v@husky.neu.edu
+    on_success: always 
