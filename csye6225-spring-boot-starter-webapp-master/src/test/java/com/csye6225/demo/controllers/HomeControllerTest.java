@@ -26,6 +26,13 @@ import static org.assertj.core.api.Assertions.*;
 import static org.mockito.Mockito.when;
 
 
+/**
+ * Mihir Patil,     001220443, patil.m@husky.neu.edu
+ * Vivek Shetye,    001237626, shetye.v@husky.neu.edu
+ * Pushkar Khedekar,001225610, khedekar.p@husky.neu.edu
+ * Atul Takekar,    001220479, takekar.a@husky.neu.edu
+ **/
+
 @DataJpaTest
 @WebMvcTest(controllers = HomeController.class, secure = false)
 public class HomeControllerTest {
