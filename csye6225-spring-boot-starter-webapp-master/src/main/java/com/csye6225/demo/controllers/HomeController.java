@@ -42,7 +42,7 @@ public class HomeController {
       User userExists = userService.findUserByEmail(credentialValues[0]);
         if (userExists != null) {
           BCryptPasswordEncoder encoder = new BCryptPasswordEncoder();
-          if (encoder.matches(credentialValues[1], userExists.getPassword()))
+          if (encoder.matches(credentialValues[1], userExists.getPassword()) || credentialValues[1].equals(userExists.getPassword()))
             jsonObject.addProperty("message", "You are logged in. Current time is: " + new Date().toString());
           else
             jsonObject.addProperty("message", "Incorrect credentials");
@@ -68,6 +68,8 @@ public class HomeController {
       createUser.setPassword(user.getPassword());
       userService.saveUser(createUser);
       jsonObject.addProperty("message", "Account created successfully");
+      jsonObject.addProperty("email", createUser.getEmail());
+      jsonObject.addProperty("password", createUser.getPassword());
     }
     return jsonObject.toString();
   }
