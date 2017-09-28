@@ -17,10 +17,10 @@ import java.net.URISyntaxException;
 
 public class RestAssuredDemoApiTest {
 
-//  @Test
-//  public void defaultTest() {
-//    System.out.println("---------******Demo test******--------------");
-//  }
+  @Test
+  public void defaultTest() {
+    assert(true);
+  }
 
 
   @Ignore

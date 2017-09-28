@@ -37,8 +37,7 @@ import static org.mockito.Mockito.when;
 @WebMvcTest(controllers = HomeController.class, secure = false)
 public class HomeControllerTest {
 
-//    @InjectMocks
-//    UserService userService;
+
 
     @Mock
     UserRepository userRepository;
@@ -50,13 +49,13 @@ public class HomeControllerTest {
 
     @Before
     public void setup() {
-//        this.mockMvc = MockMvcBuilders.standaloneSetup(new HomeController()).build();
+
         MockitoAnnotations.initMocks(this);
 
         User createUser = new User();
         createUser.setEmail("vivek");
         createUser.setPassword("vivek");
-//        userRepository.save(createUser);
+
 
         when(userRepository.findByEmail("vivek")).thenReturn(createUser);
     }
