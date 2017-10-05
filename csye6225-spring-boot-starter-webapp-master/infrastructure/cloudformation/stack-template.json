@@ -1,0 +1,119 @@
+{
+"AWSTemplateFormatVersion":"2010-09-09",
+"Description": "Cloud Formation Template",
+"Parameters": {
+		"ImgId": {
+			"Description": "Image Id",
+			"Type": "String"
+		},
+		"InstType": {
+			"Description": "Instance type",
+			"Type": "String"
+
+		},
+		"volumeSize": {
+			"Description": "Volume size",
+			"Type": "String"
+			
+		},
+		"volumeType": {
+			"Description": "Volume type",
+			"Type": "String"
+
+		},
+		"keyName": {
+			"Description": "Key name",
+			"Type": "AWS::EC2::KeyPair::KeyName"
+			
+		},
+		"securityGroupName": {
+			"Description": "Security Group name",
+			"Type": "String"
+			
+		},
+		"hostedZoneId": {
+			"Description": "Hosted Zone Id",
+			"Type": "String"
+			
+		},
+		"dnsName": {
+			"Description": "DNS name",
+			"Type": "String"
+			
+		},
+		"recordSetType": {
+			"Description": "Record set type",
+			"Type": "String"
+			
+		},
+		"recordSetTTL": {
+			"Description": "Record set TTL",
+			"Type": "String"
+			
+		}
+
+},
+"Resources":
+    {   
+	"EC2Instance":
+         {
+                "Type": "AWS::EC2::Instance",
+                    "Properties":
+            {
+                        "ImageId": {"Ref": "ImgId"},
+                        "InstanceType": {"Ref": "InstType"},
+			"SecurityGroupIds": [
+	                    {
+                            	    "Fn::GetAtt": [
+        	                    "csye6225",
+	                            "GroupId"
+                                     ]
+                            }
+			],
+                        "KeyName": {"Ref": "keyName"},
+                	"DisableApiTermination": true,
+                        "BlockDeviceMappings" : [{"DeviceName" : "/dev/sda1","Ebs" : { "VolumeSize" : {"Ref": "volumeSize"} , "VolumeType" : {"Ref": "volumeType"} }}]
+                    }
+        },    
+	"myDNSRecord" : {
+	         "Type" : "AWS::Route53::RecordSet",
+	         "Properties" : {
+        	 "HostedZoneId" : {"Ref": "hostedZoneId"},
+                 "Comment" : "DNS name for my instance.", 
+        	 "Name" : {"Ref": "dnsName"},
+        	 "Type" : {"Ref": "recordSetType"},
+        	 "TTL" : {"Ref": "recordSetTTL"},
+        	 "ResourceRecords" : [
+        	    { "Fn::GetAtt" : [ "EC2Instance", "PublicIp" ] }
+        	 ]
+      		}   
+	},
+       "csye6225":
+        {
+          "Type" : "AWS::EC2::SecurityGroup",
+          "Properties" :
+            {
+	     "GroupName": {"Ref": "securityGroupName"},
+             "VpcId" : "vpc-2433d45c",
+                 "GroupDescription" : "Allow hhtp to client",
+                 "SecurityGroupIngress" :
+                 [{
+                    "IpProtocol" : "tcp",
+                    "FromPort" : "80",
+                    "ToPort" : "80",
+                    "CidrIp" : "0.0.0.0/0"
+                 },{
+                    "IpProtocol" : "tcp",
+                    "FromPort" : "22",
+                    "ToPort" : "22",
+                    "CidrIp" : "0.0.0.0/0"
+                 },{
+                    "IpProtocol" : "tcp",
+                    "FromPort" : "443",
+                    "ToPort" : "443",
+                    "CidrIp" : "0.0.0.0/0"
+                 }]
+              }
+        }    
+    }   
+}
