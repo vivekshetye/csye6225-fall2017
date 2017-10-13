@@ -51,6 +51,10 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
             .authorizeRequests()
             .antMatchers("/user/register").permitAll()
             .antMatchers("/").permitAll()
+            .antMatchers("/user/task").permitAll()
+            .antMatchers("/user/task/{id}/attachments").permitAll()
+            .antMatchers("/user/task/{id}").permitAll()
+            .antMatchers("/user/task/{id}/attachments/{idAttachments}").permitAll()
             .anyRequest().authenticated();
 
   }
