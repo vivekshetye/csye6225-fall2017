@@ -4,6 +4,9 @@ package com.csye6225.demo.controllers;
 import com.csye6225.demo.model.FileUpload;
 import com.csye6225.demo.model.Task;
 import com.csye6225.demo.model.User;
+import com.csye6225.demo.repository.FileUploadRepository;
+import com.csye6225.demo.repository.TaskRepository;
+import com.csye6225.demo.service.TaskService;
 import com.csye6225.demo.service.UserService;
 import com.google.gson.JsonObject;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -26,10 +29,10 @@ public class TaskController {
 TaskRepository taskRepository;
 
 @Autowired
-    TaskService taskService;
+TaskService taskService;
 
 @Autowired
-    FileUploadRepository fileUploadRepository;
+FileUploadRepository fileUploadRepository;
 
     @Autowired
     private UserService userService;
