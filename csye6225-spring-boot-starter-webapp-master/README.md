@@ -62,11 +62,11 @@ http://jmeter.apache.org/download_jmeter.cgi
 * Import the web app in IntelliJ IDE.
 * Create schema in database with name e.g. MySchema
 ``` bash
-create schema Assignment3
+create schema Assignment_2
 ```
 *change application properties file as
 ``` bash
-spring.datasource.url = jdbc:mysql://localhost:3306/Assignment3
+spring.datasource.url = jdbc:mysql://localhost:3306/Assignment_2
 ```
 * Edit run configuration.
 * Add local tomcat server.
@@ -84,8 +84,36 @@ this will all unit and integration tests
 
 #Instructions to load test
 * Open HTTPRequest.jmx file in jmeter application located in jmeter folder of the project
-* Enter Number of threads to test in Thread Group--> Thread Properties
-* Start jmeter test.
+* Enter Number of threads to test in each thread group. Keep the number same for all thread groups.
+	Thread Group--> Thread Properties
+* Run each thread individually in following sequence
+
+	1. Thread Group (Login/Register)
+	1.1.After running it create file name Create_Task csv with columns (email,password,description). This file can be created by exporting 		1.2.these columns from sql table
+	In thread group of create task in CSV Data Set Config attach this created file.
+
+	2. Thread Group (Create Task)
+	2.1.After running it create file name Update_Task csv with columns (email,password,taskId,updated_Desc). This file can be created by 	     exporting these columns from sql table
+	2.2.In thread group of Update task in CSV Data Set Config attach this created file.
+
+	3. Thread Group (Update Task)
+	3.1.After running it create file name Add_Attachment csv with columns (email,password,taskId,file_path). This file can be created by 	     exporting some of these columns from sql table
+	3.2.In thread group of Add Attachments in CSV Data Set Config attach this created file.
+
+	4. Thread Group (Add Attachment(s))
+	4.1.After running it create file name Get_Attachment csv with columns (email,password,taskId). This file can be created by 	 		exporting some of these columns from sql table
+	4.2.In thread group of Get Attachments in CSV Data Set Config attach this created file.
+
+	5. Thread Group (Get attachetments)
+	5.1.After running it create file name Delete_Attachment csv with columns (email,password,taskId,attachmentId). This file can be 	created be exporting some of these columns from sql table
+	5.2.In thread group of Delete Attachments in CSV Data Set Config attach this created file.
+
+	6. Thread Group (Delete attachments)
+	After running it create file name Delete_Task csv with columns (email,password,taskId). This file can be created by 	       		exporting some of these columns from sql table
+	In thread group of Delete task in CSV Data Set Config attach this created file.
+
+	7. Thread Group (Delete Task)
+
  
 #Link to TravisCI build for the project.
 ``` bash
