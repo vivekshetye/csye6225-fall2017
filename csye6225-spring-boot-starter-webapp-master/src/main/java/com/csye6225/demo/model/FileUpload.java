@@ -1,6 +1,7 @@
 package com.csye6225.demo.model;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+import org.hibernate.annotations.GenericGenerator;
 import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 
 import javax.persistence.*;
@@ -12,8 +13,12 @@ import javax.persistence.*;
 public class FileUpload {
 
     @Id
-    @GeneratedValue(strategy= GenerationType.AUTO)
-    private long fileId;
+    @GeneratedValue(generator = "UUID")
+    @GenericGenerator(
+            name = "UUID",
+            strategy = "org.hibernate.id.UUIDGenerator"
+    )
+    private String fileId;
 
     @Column
     private String filePath;
@@ -23,11 +28,11 @@ public class FileUpload {
 
     public FileUpload(){}
 
-    public long getFileId() {
+    public String getFileId() {
         return fileId;
     }
 
-    public void setFileId(long fileId) {
+    public void setFileId(String fileId) {
         this.fileId = fileId;
     }
 
