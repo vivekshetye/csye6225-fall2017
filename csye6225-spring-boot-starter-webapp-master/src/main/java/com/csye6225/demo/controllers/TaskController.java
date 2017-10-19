@@ -11,9 +11,11 @@ import com.csye6225.demo.service.UserService;
 import com.google.gson.JsonObject;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
+import org.springframework.web.HttpRequestMethodNotSupportedException;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
+import javax.annotation.Nullable;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.validation.Valid;
@@ -36,6 +38,27 @@ FileUploadRepository fileUploadRepository;
 
     @Autowired
     private UserService userService;
+
+
+//    @ExceptionHandler
+//    protected String handlehttpRequestMethodNotSupported(HttpRequestMethodNotSupportedException ex, HttpServletRequest request, HttpServletResponse response, @Nullable Object handler) throws IOException {
+//
+//        JsonObject jsonObject = new JsonObject();
+//        jsonObject.addProperty("message", "Method not supported");
+//        response.setStatus(HttpServletResponse.SC_METHOD_NOT_ALLOWED);
+//
+//        return jsonObject.toString();
+//    }
+
+//    @ExceptionHandler(HttpRequestMethodNotSupportedException.class)
+//    @ResponseBody
+//    public String handle405Exception(HttpServletResponse response) {
+//        JsonObject jsonObject = new JsonObject();
+//        jsonObject.addProperty("message", "Method not supported");
+//        response.setStatus(HttpServletResponse.SC_METHOD_NOT_ALLOWED);
+//
+//        return jsonObject.toString();
+//    }
 
     //@PostMapping("/user/task")
     @RequestMapping(value="/user/task", method= RequestMethod.POST, produces= "application/json")
@@ -379,7 +402,7 @@ public String deleteFileById(@PathVariable(value = "id") String taskId, @PathVar
 
                         for(FileUpload fu: attachments) {
 
-                            if(fu.getFileId() == Long.parseLong(idAttachment))
+                            if(fu.getFileId() == idAttachment)
                                 deleteFileUpload = fu;
 
                         }
