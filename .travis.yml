@@ -1,28 +1,44 @@
-#!/bin/bash
-# Mihir Patil,     001220443, patil.m@husky.neu.edu
-# Vivek Shetye,    001237626, shetye.v@husky.neu.edu
-# Pushkar Khedekar,001225610, khedekar.p@husky.neu.edu
-# Atul Takekar,    001220479, takekar.a@husky.neu.edu
-#
-
 language: java
 jdk:
-  - oraclejdk8
-
+- oraclejdk8
 sudo: false
 install: true
-
 script:
-  - cd csye6225-spring-boot-starter-webapp-master
-  - ./gradlew war
-  - ./gradlew test
+- cd csye6225-spring-boot-starter-webapp-master
+- "./gradlew war"
+- "./gradlew test"
+
+after_success:
+  - mkdir codedeploy
+  - zip -r csye6225-spring-boot-starter-webapp-master-${TRAVIS_JOB_NUMBER}.zip build/libs/ROOT.war appspec.yml
+  - ls -al
+  - mv csye6225-spring-boot-starter-webapp-master-${TRAVIS_JOB_NUMBER}.zip codedeploy/
+  - ls -al
+  - pwd
+  - cd codedeploy
+  - ls -al
+  - pwd
+
+before_deploy:
+  - cd ..
+
+deploy:
+  - provider: s3
+    access_key_id: AKIAJ3RLUIZ4KTNYPLEQ
+    secret_access_key: 
+      secure: "jd4EsF6mivfvVFLWZewCmqoQJRkNM4zxagwNKz2+qrUGCWdJrUrdm83ENs1iu0IBHyRst/MpeTDXUj2tQgWsSSsObhM+bi4KOoJAOCq6MumiPZ4U9aYoNGMzX/cXifBJfsZliZ9BpbHedBRVZ085z2So9gpD9FFpjROjii/2SPM8TXUpS2ssYLxqXsS+mOl/BPo1B6U9X7wOM40Gy1/96F+SPMQ5+IycO+TRzH/d0IZT2ObuXIayqJbhHlL2fTELeOh0qDdHiQySj5eE5lM+c0A+qjW3/RkTyw8ZbO3OMiayKXqrsz5wLLUfAD/RaIKRgSfvx6a1XehEWNRnTPTM0v55g7E/QGJxxGbrHVbEfv1c0oqjfefJCbheur8Cj9WEDymDtwOViVg2+QXey6XM3w7M3DKlJ0E7h7Kt7GWfgyHqdSJChEBX9BTN7sJ6uZQsCdjF03GGx/z7CzDY+VIdULntcjxdP1NIAqMVnAZ2CPpmQjay+b/Yg2EaAaeuVFbPqAapiYH0BJUmVcMgU1wRc0K4QXJT3k0lL4kXANjGpWx+clrgJgkd3pLE+hNM2xcIE9GzuLDnGS+knbINZhScSJMvh8zBWwOBnY76MprOBkPqPtgZ03HFPi1lzw4myjvLkomldzXWyznmYOVlnYR+pkcny5vp83wVm6TOEfE87A8="
+    local_dir: codedeploy
+    bucket: code-deploy.csye6225-fall2017-shetyev.me
+    region: us-east-1
+    skin_cleanup: true
 
 
 notifications:
   email:
     recipients:
-      - shetye.v@husky.neu.edu
-      - patil.m@husky.neu.edu
-      - khedekar.p@husky.neu.edu
-      - takekar.a@husky.neu.edu
-    on_success: always 
+    - shetye.v@husky.neu.edu
+    - patil.m@husky.neu.edu
+    - khedekar.p@husky.neu.edu
+    - takekar.a@husky.neu.edu
+    on_success: always
+
