@@ -9,7 +9,7 @@ script:
 - "./gradlew test"
 
 after_success:
-  - cd ..
+  - pwd
   - mkdir codedeploy
   - zip -r csye6225-spring-boot-starter-webapp-master-${TRAVIS_JOB_NUMBER}.zip build/libs/ROOT.war appspec.yml
   - ls -al
@@ -21,6 +21,7 @@ after_success:
   - pwd
 
 before_deploy:
+  - pwd
   - cd ..
 
 deploy:
