@@ -13,7 +13,7 @@ after_success:
   - mkdir codedeploy
   - zip -r csye6225-spring-boot-starter-webapp-master.zip build/libs/ROOT.war 
   - ls -al
-  - mv csye6225-spring-boot-starter-webapp-master-${TRAVIS_JOB_NUMBER}.zip codedeploy/
+  - mv csye6225-spring-boot-starter-webapp-master.zip codedeploy/
   - ls -al
   - pwd
   - cd codedeploy
