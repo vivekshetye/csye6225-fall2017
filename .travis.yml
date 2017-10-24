@@ -21,6 +21,7 @@ after_success:
   - pwd
 
 before_deploy:
+  - cd ..
   - pwd
   
   
