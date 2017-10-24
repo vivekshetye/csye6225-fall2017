@@ -11,7 +11,7 @@ script:
 after_success:
   - pwd
   - mkdir codedeploy
-  - zip -r csye6225-spring-boot-starter-webapp-master-${TRAVIS_JOB_NUMBER}.zip csye6225-spring-boot-starter-webapp-master/build/libs/ROOT.war appspec.yml
+  - zip -r csye6225-spring-boot-starter-webapp-master.zip csye6225-spring-boot-starter-webapp-master/build/libs/ROOT.war appspec.yml
   - ls -al
   - mv csye6225-spring-boot-starter-webapp-master-${TRAVIS_JOB_NUMBER}.zip codedeploy/
   - ls -al
