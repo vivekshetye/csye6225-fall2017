@@ -35,7 +35,7 @@ deploy:
     bucket: code-deploy.csye6225-fall2017-shetyev.me
     region: us-east-1
     skip_cleanup: true
-    - provider: codedeploy
+  - provider: codedeploy
     access_key_id: AKIAJ3RLUIZ4KTNYPLEQ
     bucket: code-deploy.csye6225.com
     key: csye6225-spring-boot-starter-webapp-master.zip
