@@ -35,6 +35,17 @@ deploy:
     bucket: code-deploy.csye6225-fall2017-shetyev.me
     region: us-east-1
     skip_cleanup: true
+    - provider: codedeploy
+    access_key_id: AKIAJ3RLUIZ4KTNYPLEQ
+    bucket: code-deploy.csye6225.com
+    key: csye6225-spring-boot-starter-webapp-master.zip
+    bundle_type: zip
+    application: CODE_DEPLOY_APPLICATION_NAME
+    deployment_group: CODE_DEPLOY_APPLICATION_NAME
+    region: us-east-1
+    secret_access_key:
+      secure: "cqeY2Y0vU+t/ixBNqtTksKrzCRB6CTrUfX2QOdojzWYQx+BxJFDS4UYzCoyFy6mbZSBq/4XLdBicbZNcPjpqNsnJlnE30HWjHa3QVYlJdknkYWkZ45Y8zN8EE0orR80lgh70/FTTq+WoMtgvhHefV7545z46TL/rp377vxSJw1EtbqndTFZQOlVG64JjRvMtfcdp3UaYY22ePlLLwY0j17SceMCCYeXmv60Jm97nJGZAoDJkJUxW+EIaHRZ2S09gMHo/V9gudFJJ1a4kHtXVSo6DLiAF38ZyRbvcG40mjh6MeJECIuQ9OxL2of3OjZ8RgUOe9N7BCO2eewVIpIcAOFR+TFfYZbNXW6vM9ZkMEz+85WO8n5WMea1qjz0NVAaIN8iM/A87JgEC4hPuRAwo5RnexkZ4KeuJIudWZt+fLmZTpPGozOcl8BP0f6hxoEsbysld6XKI/qM6srIdnXKg7KFpx8ia5uYIGDc6BFdM4nn0sV11n8eeiza1TV2BYm3qfZjsDVzZiKcpsSfIpoesvKTgW0jC8GkVxAnONypmH4jquv0PHHozdQvQGzBIk1qnaY37BdLQv0JMrNgrRy+MwY08xeY/dMoWOSR0QN3tabW1pOQyAUewbx1znwsBvSsVKyj2fH4yQCTJLxoYiqtPn8yJUJz0Nm8McPsmmzFy74M="
+    wait-until-deployed: true
 
 
 notifications:
