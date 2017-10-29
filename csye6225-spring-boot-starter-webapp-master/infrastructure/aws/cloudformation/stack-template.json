@@ -119,7 +119,7 @@
        "Type" : "AWS::EC2::Subnet",
        "Properties" : {
        "VpcId" : {"Ref": "vpcId"},
-       "CidrBlock": "172.31.128.0/20",
+       "CidrBlock": "172.31.112.0/20",
        "AvailabilityZone" : "us-east-1e"
         }
 },
@@ -128,7 +128,7 @@
        "Type" : "AWS::EC2::Subnet",
        "Properties" : {
        "VpcId" : {"Ref": "vpcId"},
-       "CidrBlock": "172.31.112.0/20",
+       "CidrBlock": "172.31.128.0/20",
        "AvailabilityZone" : "us-east-1b"
       }
 },
@@ -221,7 +221,7 @@
 "S3Bucket" : {
       "Type": "AWS::S3::Bucket",
       "Properties" : {
-      "BucketName" : "csye6225-fall2017-patilm.me.csye6225.com"}
+      "BucketName" : "csye6225-fall2017-shetyev2.me.csye6225.com"}
 },
 
 
@@ -231,7 +231,7 @@
     "AllocatedStorage" :"100",
     "DBName" : "csye6225",
     "DBInstanceClass" : "db.t2.medium",
-    "DBInstanceIdentifier" : "csye6225-fall2017",
+    "DBInstanceIdentifier" : "csye-6225-fall2017",
     "DBSubnetGroupName": {"Ref": "DBSubnetGroup"},
     "DBSecurityGroups":[{"Ref":"csye6225rds"}],
     "Engine" : "MySQL",
