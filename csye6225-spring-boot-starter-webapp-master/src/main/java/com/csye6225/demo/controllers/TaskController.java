@@ -1,15 +1,21 @@
 package com.csye6225.demo.controllers;
 
 
+import com.amazonaws.HttpMethod;
+import com.amazonaws.services.s3.AmazonS3Client;
+import com.amazonaws.services.s3.model.GeneratePresignedUrlRequest;
 import com.csye6225.demo.model.FileUpload;
 import com.csye6225.demo.model.Task;
 import com.csye6225.demo.model.User;
 import com.csye6225.demo.repository.FileUploadRepository;
 import com.csye6225.demo.repository.TaskRepository;
+import com.csye6225.demo.service.S3ServicesImpl;
 import com.csye6225.demo.service.TaskService;
 import com.csye6225.demo.service.UserService;
 import com.google.gson.JsonObject;
+import org.joda.time.DateTime;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.web.HttpRequestMethodNotSupportedException;
 import org.springframework.web.bind.annotation.*;
@@ -21,6 +27,8 @@ import javax.servlet.http.HttpServletResponse;
 import javax.validation.Valid;
 import java.io.File;
 import java.io.IOException;
+import java.net.URL;
+import java.time.Instant;
 import java.util.Base64;
 import java.util.List;
 
@@ -36,31 +44,19 @@ TaskService taskService;
 @Autowired
 FileUploadRepository fileUploadRepository;
 
+@Autowired
+private AmazonS3Client s3Client;
+
+    @Value("${cloud.aws.s3.bucket}")
+    private String bucketName;
+
     @Autowired
     private UserService userService;
 
 
-//    @ExceptionHandler
-//    protected String handlehttpRequestMethodNotSupported(HttpRequestMethodNotSupportedException ex, HttpServletRequest request, HttpServletResponse response, @Nullable Object handler) throws IOException {
-//
-//        JsonObject jsonObject = new JsonObject();
-//        jsonObject.addProperty("message", "Method not supported");
-//        response.setStatus(HttpServletResponse.SC_METHOD_NOT_ALLOWED);
-//
-//        return jsonObject.toString();
-//    }
+    @Autowired
+    private S3ServicesImpl s3ServiceImpl;
 
-//    @ExceptionHandler(HttpRequestMethodNotSupportedException.class)
-//    @ResponseBody
-//    public String handle405Exception(HttpServletResponse response) {
-//        JsonObject jsonObject = new JsonObject();
-//        jsonObject.addProperty("message", "Method not supported");
-//        response.setStatus(HttpServletResponse.SC_METHOD_NOT_ALLOWED);
-//
-//        return jsonObject.toString();
-//    }
-
-    //@PostMapping("/user/task")
     @RequestMapping(value="/user/task", method= RequestMethod.POST, produces= "application/json")
     public String createNote(@Valid @RequestBody Task task/*@RequestParam("description") String description*/, HttpServletRequest request,/* @RequestParam("files") MultipartFile[] files,*/ HttpServletResponse response) {
 
@@ -321,13 +317,22 @@ Update task description
                                     for(MultipartFile file : files) {
                                         String orgName = file.getOriginalFilename();
                                         String filePath = realPathtoUploads + orgName;
-                                        FileUpload fileUpload = new FileUpload();
-                                        fileUpload.setFilePath(filePath);
-                                        fileUpload.setTask(task);
-                                        fileUploadRepository.save(fileUpload);
-                                        //task.getFiles().add(fileUpload);
+
                                         File dest = new File(filePath);
                                         file.transferTo(dest);
+                                        String key = Instant.now().getEpochSecond() + "_" + dest.getName();
+                                        GeneratePresignedUrlRequest generatePresignedUrlRequest = new GeneratePresignedUrlRequest(bucketName, key);
+                                        generatePresignedUrlRequest.setMethod(HttpMethod.GET);
+                                        generatePresignedUrlRequest.setExpiration(DateTime.now().plusDays(4).toDate());
+
+                                        URL signedUrl = s3Client.generatePresignedUrl(generatePresignedUrlRequest);
+
+                                        FileUpload fileUpload = new FileUpload();
+                                        fileUpload.setFilePath(signedUrl.toString());
+                                        fileUpload.setTask(task);
+                                        fileUploadRepository.save(fileUpload);
+
+                                        s3ServiceImpl.uploadFile(key,dest);
 
 
 
@@ -404,7 +409,7 @@ public String deleteFileById(@PathVariable(value = "id") String taskId, @PathVar
 
                         for(FileUpload fu: attachments) {
 
-                            if(fu.getFileId() == idAttachment)
+                            if(fu.getFileId().equals(idAttachment))
                                 deleteFileUpload = fu;
 
                         }
