@@ -41,14 +41,6 @@
 		"recordSetTTL": {
 			"Description": "Record set time to live",
 			"Type": "String"		
-		},
-		"stackName": {
-			"Description": "Stack Name",
-			"Type": "String"		
-		},
-		"region": {	
-			"Description": "Region",
-			"Type": "String"		
 		}
 },
 
@@ -57,7 +49,7 @@
         "EC2Instance": {
             "Type": "AWS::EC2::Instance",
             "Properties": {
-		"KeyName" : {"Ref": "keyName"},
+				"KeyName" : {"Ref": "keyName"},
                 "ImageId": {"Ref": "imgId"},
                 "InstanceType": {"Ref": "InstType"},
                 "SecurityGroupIds": [
@@ -68,12 +60,12 @@
                         ]
                     }
                 ],
-		"DisableApiTermination": "TRUE",
-		"BlockDeviceMappings" : [
+				"DisableApiTermination": "TRUE",
+				"BlockDeviceMappings" : [
                 {
                 "DeviceName" : "/dev/sda1",
                 "Ebs" : { 
-                          "DeleteOnTermination": true,
+                          
                           "VolumeSize": {"Ref": "volumeSize"},
                           "VolumeType": {"Ref": "volumeType"}
                         } 
@@ -84,16 +76,39 @@
 			"apt-get update \n",
 			"apt-get install default-jdk -y \n",
 			"update-alternatives --config java \n",
-			"echo JAVA_HOME=\"/usr/lib/jvm/java-8-openjdk-amd64/jre/bin/java\" > /etc/environment \n",
+			"echo JAVA_HOME='/usr/lib/jvm/java-8-openjdk-amd64/jre/bin/java' > /etc/environment \n",
 			"echo 'export JAVA_HOME' > /etc/environment \n", 
 			"source /etc/environment \n",
 			"apt-get install curl -y \n",
-			"apt-get install tomcat8 -y \n",	
+			
+
+			
+			"cd /tmp \n",
+			"curl -O https://archive.apache.org/dist/tomcat/tomcat-8/v8.5.5/bin/apache-tomcat-8.5.5.tar.gz \n",
+			
+			"mkdir /opt/tomcat \n",
+			
+			"tar -xf apache-tomcat-8.5.5.tar.gz -C /opt/tomcat --strip-components=1 \n",
+			"cd /opt/tomcat \n",
+			"chmod -R 777 * \n",
+			"cd bin \n",
+			"chmod -R 777 *",
+			"chmod +x startup.sh \n",
+			"./startup.sh \n",
+			"echo '#!/bin/sh' > /opt/tomcat/bin/setenv.sh \n",
+			"echo JAVA_OPTS=$JAVA_OPTS -Dspring.datasource.url='jdbc:mysql://YOUR_RDS_ENDPOINT:3306/csye6225' >> /opt/tomcat/bin/setenv.sh \n",
+			"echo JAVA_OPTS=”$JAVA_OPTS -Dspring.datasource.username= >> /opt/tomcat/bin/setenv.sh \n",
+			"echo JAVA_OPTS=”$JAVA_OPTS -Dspring.datasource.password= >> /opt/tomcat/bin/setenv.sh \n",
+			"chmod -R 777 bin/* \n",
+
 			"apt-get install ruby -y\n",
 			"cd /home/ubuntu \n",
 			"curl -O https://aws-codedeploy-us-east-1.s3.amazonaws.com/latest/install \n",
 			"chmod +x ./install \n",
-			"./install auto"									
+			"./install auto"
+			
+			
+			
 	]
  	]
 			}
@@ -169,31 +184,28 @@
             } 
 },
 
-"csye6225rds":{
-         "Type":"AWS::RDS::DBSecurityGroup",
-         "Properties":{
-            "DBSecurityGroupIngress":{
-               "EC2SecurityGroupName":{
-                  "Ref":"csye6225webapp"
-               }
-            },
-            "GroupDescription":"Frontend Access"
-         }
-      },
-      "csye6225webapp":{
-         "Type":"AWS::EC2::SecurityGroup",
-         "Properties":{
-            "GroupDescription":"Enable HTTP access via port 3306",
-            "SecurityGroupIngress":[
-               {
-                  "IpProtocol":"tcp",
-                  "FromPort":"3306",
-                  "ToPort":"3306",
-                  "CidrIp":"0.0.0.0/0"
-               }
-            ]
-         }
-      },
+"csye6225rds": {
+      "Type": "AWS::EC2::SecurityGroup",
+      "Properties": {				
+          "GroupDescription": "Enable HTTP access via port 3306",
+          "VpcId": {"Ref": "vpcId"}
+            } 
+},
+
+"csye6225rdsIngress": {
+      "Type": "AWS::EC2::SecurityGroupIngress",
+      "Properties": {
+          "GroupId": {
+          "Ref": "csye6225rds"
+          },
+          "IpProtocol": "tcp",
+          "FromPort": "3306",
+          "ToPort": "3306",
+          "SourceSecurityGroupId": {
+          "Ref": "csye6225webapp"
+           }
+           }
+},
 
 "DynamoDBTable" :{
       "Type": "AWS::DynamoDB::Table",
@@ -233,8 +245,8 @@
     "DBInstanceClass" : "db.t2.medium",
     "DBInstanceIdentifier" : "csye-6225-fall2017",
     "DBSubnetGroupName": {"Ref": "DBSubnetGroup"},
-    "DBSecurityGroups":[{"Ref":"csye6225rds"}],
     "Engine" : "MySQL",
+    "EngineVersion" : "5.6.35",
     "MasterUsername" : "csye6225master",
     "MasterUserPassword" : "csye6225password",
     "MultiAZ" : "FALSE",

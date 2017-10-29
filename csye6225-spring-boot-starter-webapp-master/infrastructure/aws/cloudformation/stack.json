@@ -1,21 +1,145 @@
 {
 "AWSTemplateFormatVersion":"2010-09-09",
 "Description": "Cloud Formation Template",
+"Parameters": {
+		"imgId": {
+			"Description": "imageId",
+			"Type": "String"
+		},
+		"vpcId": {
+			"Description": "vpcId",
+			"Type": "String"
+		},
+		"InstType": {
+			"Description": "Instance type",
+			"Type": "String"
+		},
+		"volumeSize": {
+			"Description": "Volume size",
+			"Type": "String"				
+		},
+		"volumeType": {
+			"Description": "Volume type",
+			"Type": "String"
+		},
+		"keyName": {
+			"Description": "keyName",
+			"Type": "AWS::EC2::KeyPair::KeyName"
+		}
+},
+
 "Resources": {
-"DBInstance" : {
-    "Type" : "AWS::RDS::DBInstance",
-    "Properties" : {
-    "AllocatedStorage" :"100",
-    "DBName" : "csye6225",
-    "DBInstanceClass" : "db.t2.medium",
-    "DBInstanceIdentifier" : "csye6225-fall2017",
-    "Engine" : "MySQL",
-    "EngineVersion" : "5.6.35",
-    "MasterUsername" : "csye6225master",
-    "MasterUserPassword" : "csye6225password",
-    "MultiAZ" : "FALSE",
-    "PubliclyAccessible" : "FALSE"
-    }
+
+        "EC2Instance": {
+            "Type": "AWS::EC2::Instance",
+            "Properties": {
+				"KeyName" : {"Ref": "keyName"},
+                "ImageId": {"Ref": "imgId"},
+                "InstanceType": {"Ref": "InstType"},
+                "SecurityGroupIds": [
+                    {
+                        "Fn::GetAtt": [
+                            "csye6225webapp",
+                            "GroupId"
+                        ]
+                    }
+                ],
+				"DisableApiTermination": "TRUE",
+				"BlockDeviceMappings" : [
+                {
+                "DeviceName" : "/dev/sda1",
+                "Ebs" : { 
+                          
+                          "VolumeSize": {"Ref": "volumeSize"},
+                          "VolumeType": {"Ref": "volumeType"}
+                        } 
+                }
+                ],
+		"UserData": { "Fn::Base64" : { "Fn::Join" : ["", [
+			"#!/bin/bash -v \n",
+			"apt-get update \n",
+			"apt-get install default-jdk -y \n",
+			"update-alternatives --config java \n",
+			
+			"echo 'JAVA_HOME=\"/usr/lib/jvm/java-8-openjdk-amd64/jre/bin/java\"' >> /etc/environment \n",
+			 
+			"source /etc/environment.txt \n",
+			"apt-get install curl -y \n",
+			
+
+			
+			"cd /tmp \n",
+			"curl -O https://archive.apache.org/dist/tomcat/tomcat-8/v8.5.5/bin/apache-tomcat-8.5.5.tar.gz \n",
+			
+			"mkdir /opt/tomcat \n",
+			
+			"tar -xf apache-tomcat-8.5.5.tar.gz -C /opt/tomcat --strip-components=1 \n",
+			"cd /opt/tomcat \n",
+			"chmod -R 777 * \n",
+			
+			"cd bin \n",
+			"chmod -R 777 *",
+			"chmod +x startup.sh \n",
+			"./startup.sh \n",
+			"echo '#!/bin/sh' > /opt/tomcat/bin/setenv.sh \n",
+			"echo 'JAVA_OPTS=$JAVA_OPTS -Dspring.datasource.url=\"jdbc:mysql://YOUR_RDS_ENDPOINT:3306/csye6225\"' >> /opt/tomcat/bin/setenv.sh \n",
+			"echo 'JAVA_OPTS=\"$JAVA_OPTS -Dspring.datasource.username=\"' >> /opt/tomcat/bin/setenv.sh \n",
+			"echo 'JAVA_OPTS=\"$JAVA_OPTS -Dspring.datasource.password=\"' >> /opt/tomcat/bin/setenv.sh \n",
+			"chmod -R 777 * \n",
+			"cd .. \n",			
+			"cd logs \n",
+			"chmod -R 777 *\n",
+			
+
+			"apt-get install ruby -y\n",
+			"cd /home/ubuntu \n",
+			"curl -O https://aws-codedeploy-us-east-1.s3.amazonaws.com/latest/install \n",
+			"chmod +x ./install \n",
+			"./install auto"
+			
+			
+			
+	]
+ 	]
+			}
+
+		}
+         }
+	    
+},
+
+
+
+
+"csye6225webapp": {
+      "Type": "AWS::EC2::SecurityGroup",
+      "Properties": {				
+           "GroupDescription": "Enable HTTP access via port 80, SSH access via port 22, HTTPS access via port 443",
+           "VpcId": {"Ref": "vpcId"},
+           "SecurityGroupIngress": [
+           	  {
+                  "IpProtocol": "tcp",
+                  "FromPort": "80",
+                  "ToPort": "80",
+                  "CidrIp": "0.0.0.0/0"
+                  },
+                  {
+            	  "IpProtocol": "tcp",
+                  "FromPort": "22",
+                  "ToPort": "22",
+                  "CidrIp": "0.0.0.0/0"
+                  },
+                  {
+                  "IpProtocol": "tcp",
+                  "FromPort": "443",
+                  "ToPort": "443",
+                  "CidrIp": "0.0.0.0/0"
+                  }
+                ]
+            } 
+}
+
+
 }
 }
-}
+
