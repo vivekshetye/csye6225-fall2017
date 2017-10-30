@@ -35,6 +35,9 @@ deploy:
     bucket: code-deploy.csye6225-fall2017-patilm.me
     region: us-east-1
     skip_cleanup: true
+    all_branches: true
+    on:
+      branch: mihir_assignment7
   - provider: codedeploy
     access_key_id: AKIAJZP76MZEPNFIHF6A
     bucket: code-deploy.csye6225.com-fall2017-patilm.me
@@ -46,6 +49,9 @@ deploy:
     secret_access_key:
       secure:  "cBGIrWPIWLYO/W7+y91M3lEO3gLW1VLHo3An5GjnGpdsbPm/Qg8zuyRRVvfRm0aaLxeWpBrd6oqJOUpRZcL9qsJykITf19VyHGynWfV6YsY6DA+3Kpgo4NCxk30F3jKNzk3OxPHOYShHEVUCMTsB6bwWyLfX3kXzipb122PN0EyWZF8QqQIbtCPGnamOBRUK5EL35+b1ZXoF4Zdh6T2IuavOxkeAyD83rbADm45MNlY0XVZE1HkoOzS+NC2HJFmSuKVLyD3Ajx2k2NHUbPzckHwkmnptFz8z0sl5jajIjZXzqpOKHwaGtE90L7FIVOhna0EYBDWN60Urh7NQUkggbV6IwtrpsD48tVhZ8yKyeuCBn39D6m9eLBPHPzM16bW6M67DksHSg/xp+O+VrbnwHbNCgIUyaVjTN5aBTyVEYltUD33mRiaKNiom2xtchaP65uHHfjVsEsWggx8U50M7M5fTRs1PfX5iFP9UPjnwkkfTKR7pPmF9jX/q7Lobbqi9jD7zviqUOP+1OO+4XX1TPI+JHgfTkbKGzdqqyLeuZT7N1tvGv55BSCqhd1jInPeR8wIW+qAhXn2cH7I63eqq2cvx3QR48nAeCMDZ8Goku8I83ZrbHo7JiXH6R1ElQxRAVRfiNpyMlSxkdBlOB/iaNzFlKm/tthj9D6MPy/o0KeM="
     wait-until-deployed: true
+    all_branches: true
+    on:
+      branch: mihir_assignment7
 
 
 notifications:
