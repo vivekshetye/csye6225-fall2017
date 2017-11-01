@@ -230,6 +230,12 @@
 		"Ref":"insProfile"			
 		},
         "KeyName" : {"Ref": "keyName"},
+	"Tags": [
+		{
+			"Key":"course",
+			"Value" : "csye6225"
+		}
+],
                 "ImageId": {"Ref": "imgId"},
                 "InstanceType": {"Ref": "InstType"},
                 "SecurityGroupIds": [
