@@ -55,6 +55,146 @@
 
 "Resources": {
 
+"insProfile":{
+         "Type":"AWS::IAM::InstanceProfile",
+         "Properties":{
+            "Roles":[
+               {
+                  "Ref":"CodeDeployEC2ServiceRole"
+               }
+            ]
+         }
+      },
+      "CodeDeployEC2ServiceRole":{
+         "Type":"AWS::IAM::Role",
+         "Properties":{
+            "AssumeRolePolicyDocument":{
+               "Version":"2012-10-17",
+               "Statement":[
+                  {
+                     "Effect":"Allow",
+                     "Principal":{
+                        "Service":[
+                           "ec2.amazonaws.com"
+                        ]
+                     },
+                     "Action":[
+                        "sts:AssumeRole"
+                     ]
+                  }
+               ]
+            },
+            "Path":"/"
+         }
+      },
+      "CodeDeployEC2S3":{
+         "Type":"AWS::IAM::Policy",
+         "Properties":{
+            "PolicyName":"CodeDeployEC2S3",
+            "PolicyDocument":{
+               "Version":"2012-10-17",
+               "Statement":[
+                  {
+                     "Action":[
+                        "s3:Get*",
+                        "s3:List*"
+                     ],
+                     "Effect":"Allow",
+                     "Resource":"*"
+                  }
+               ]
+            },
+            "Roles":[
+               {
+                  "Ref":"CodeDeployEC2ServiceRole"
+               }
+            ]
+         }
+      },
+      "CodeDeployServiceRole":{
+         "Type":"AWS::IAM::Role",
+         "Properties":{
+            "AssumeRolePolicyDocument":{
+               "Version":"2012-10-17",
+               "Statement":[
+                  {
+                     "Effect":"Allow",
+                     "Principal":{
+                        "Service":[
+                           "ec2.amazonaws.com"
+                        ]
+                     },
+                     "Action":[
+                        "sts:AssumeRole"
+                     ]
+                  }
+               ]
+            },
+            "Path":"/"
+         }
+      },
+      "AWSCodeDeployRole":{
+         "Type":"AWS::IAM::Policy",
+         "Properties":{
+            "PolicyName":"AWSCodeDeployRole",
+            "PolicyDocument":{
+               "Version":"2012-10-17",
+               "Statement":[
+                  {
+                     "Effect":"Allow",
+                     "Action":[
+                        "autoscaling:CompleteLifecycleAction",
+                        "autoscaling:DeleteLifecycleHook",
+                        "autoscaling:DescribeAutoScalingGroups",
+                        "autoscaling:DescribeLifecycleHooks",
+                        "autoscaling:PutLifecycleHook",
+                        "autoscaling:RecordLifecycleActionHeartbeat",
+                        "autoscaling:CreateAutoScalingGroup",
+                        "autoscaling:UpdateAutoScalingGroup",
+                        "autoscaling:EnableMetricsCollection",
+                        "autoscaling:DescribeAutoScalingGroups",
+                        "autoscaling:DescribePolicies",
+                        "autoscaling:DescribeScheduledActions",
+                        "autoscaling:DescribeNotificationConfigurations",
+                        "autoscaling:DescribeLifecycleHooks",
+                        "autoscaling:SuspendProcesses",
+                        "autoscaling:ResumeProcesses",
+                        "autoscaling:AttachLoadBalancers",
+                        "autoscaling:PutScalingPolicy",
+                        "autoscaling:PutScheduledUpdateGroupAction",
+                        "autoscaling:PutNotificationConfiguration",
+                        "autoscaling:PutLifecycleHook",
+                        "autoscaling:DescribeScalingActivities",
+                        "autoscaling:DeleteAutoScalingGroup",
+                        "ec2:DescribeInstances",
+                        "ec2:DescribeInstanceStatus",
+                        "ec2:TerminateInstances",
+                        "tag:GetTags",
+                        "tag:GetResources",
+                        "sns:Publish",
+                        "cloudwatch:DescribeAlarms",
+                        "cloudwatch:PutMetricAlarm",
+                        "elasticloadbalancing:DescribeLoadBalancers",
+                        "elasticloadbalancing:DescribeInstanceHealth",
+                        "elasticloadbalancing:RegisterInstancesWithLoadBalancer",
+                        "elasticloadbalancing:DeregisterInstancesFromLoadBalancer",
+                        "elasticloadbalancing:DescribeTargetGroups",
+                        "elasticloadbalancing:DescribeTargetHealth",
+                        "elasticloadbalancing:RegisterTargets",
+                        "elasticloadbalancing:DeregisterTargets"
+                     ],
+                     "Resource":"*"
+                  }
+               ]
+            },
+            "Roles":[
+               {
+                  "Ref":"CodeDeployServiceRole"
+               }
+            ]
+         }
+      },
+
         "EC2Instance": {
             "Type": "AWS::EC2::Instance",
             "Properties": {
@@ -93,7 +233,7 @@
 	
 				
 				"sudo apt-get install tomcat8 -y \n",
-				"echo '#!/bin/sh' > /opt/tomcat/bin/setenv.sh \n",
+				"echo '#!/bin/sh' >> /opt/tomcat/bin/setenv.sh \n",
 {"Fn::Join":["",["echo 'JAVA_OPTS=$JAVA_OPTS -Dspring.datasource.url=\"jdbc:mysql://",{"Fn::GetAtt":["DBInstance","Endpoint.Address"]},":3306/csye6225\"\"'>> /opt/tomcat/bin/setenv.sh \n"]]},
 			
 			"echo JAVA_OPTS=”$JAVA_OPTS -Dspring.datasource.username= {\"Ref\":\"rdsParamUserName\"} >> /opt/tomcat/bin/setenv.sh \n",
@@ -234,7 +374,7 @@
 "S3Bucket" : {
       "Type": "AWS::S3::Bucket",
       "Properties" : {
-      "BucketName" : "csye6225-fall2017-patilm.me.csye6225.com"}
+      "BucketName" : "csye6225-fall2017-shetyevbucket.me.csye6225.com"}
 },
 
 
@@ -242,7 +382,7 @@
     "Type" : "AWS::RDS::DBInstance",
     "Properties" : {
     "AllocatedStorage" :"100",
-    "DBName" : "csye6225",
+    "DBName" : "csye6225fall2017",
     "DBInstanceClass" : "db.t2.medium",
     "DBInstanceIdentifier" : "csye6225-fall2017",
     "DBSubnetGroupName": {"Ref": "DBSubnetGroup"},
