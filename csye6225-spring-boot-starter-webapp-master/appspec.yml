@@ -6,7 +6,7 @@ files:
     destination: /home/ubuntu
   - source: ./restartTomcat.sh
     destination: /home/ubuntu
-  - source: .csye6225-spring-boot-starter-webapp-master/build/libs/ROOT.war
+  - source: ./build/libs/ROOT.war
     destination: /var/lib/tomcat7/webapps
 
 hooks:
