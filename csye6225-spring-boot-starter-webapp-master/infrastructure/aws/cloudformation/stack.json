@@ -32,6 +32,19 @@
 
         "EC2Instance": {
             "Type": "AWS::EC2::Instance",
+"Metadata":{
+            "AWS::CloudFormation::Init":{
+               "config":{
+                  "packages":{
+                     "apt":{
+                        "tomcat8":[
+
+                        ]
+                     }
+                  }
+               }
+            }
+         },
             "Properties": {
 				"KeyName" : {"Ref": "keyName"},
                 "ImageId": {"Ref": "imgId"},
@@ -62,26 +75,16 @@
 			"update-alternatives --config java \n",
 			
 			"echo 'JAVA_HOME=\"/usr/lib/jvm/java-8-openjdk-amd64/jre/bin/java\"' >> /etc/environment \n",
+			"echo 'export JAVA_HOME' >> /etc/environment \n",
 			 
 			"source /etc/environment.txt \n",
 			"apt-get install curl -y \n",
 			
-
+			"groupadd tomcat \n",
+			"sudo apt-get install tomcat8 -y \n",
 			
-			"cd /tmp \n",
-			"curl -O https://archive.apache.org/dist/tomcat/tomcat-8/v8.5.5/bin/apache-tomcat-8.5.5.tar.gz \n",
-			
-			"mkdir /opt/tomcat \n",
-			
-			"tar -xf apache-tomcat-8.5.5.tar.gz -C /opt/tomcat --strip-components=1 \n",
-			"cd /opt/tomcat \n",
-			"chmod -R 777 * \n",
-			
-			"cd bin \n",
-			"chmod -R 777 *",
-			"chmod +x startup.sh \n",
-			"./startup.sh \n",
-			"echo '#!/bin/sh' > /opt/tomcat/bin/setenv.sh \n",
+			"apt-get update \n",
+			"echo '#!/bin/sh' >> /opt/tomcat/bin/setenv.sh \n",
 			"echo 'JAVA_OPTS=$JAVA_OPTS -Dspring.datasource.url=\"jdbc:mysql://YOUR_RDS_ENDPOINT:3306/csye6225\"' >> /opt/tomcat/bin/setenv.sh \n",
 			"echo 'JAVA_OPTS=\"$JAVA_OPTS -Dspring.datasource.username=\"' >> /opt/tomcat/bin/setenv.sh \n",
 			"echo 'JAVA_OPTS=\"$JAVA_OPTS -Dspring.datasource.password=\"' >> /opt/tomcat/bin/setenv.sh \n",
