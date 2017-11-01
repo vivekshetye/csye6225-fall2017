@@ -360,7 +360,7 @@
             }
 },
 
-"csye6225rds":{
+ "csye6225rds":{
          "Type":"AWS::RDS::DBSecurityGroup",
          "Properties":{
             "DBSecurityGroupIngress":{
@@ -375,12 +375,15 @@
          "Type":"AWS::EC2::SecurityGroup",
          "Properties":{
             "GroupDescription":"Enable HTTP access via port 3306",
+       
             "SecurityGroupIngress":[
                {
                   "IpProtocol":"tcp",
                   "FromPort":"3306",
                   "ToPort":"3306",
-                  "CidrIp":"0.0.0.0/0"
+        "SourceSecurityGroupId": {
+              "Ref": "csye6225webapp"
+               }
                }
             ]
          }
