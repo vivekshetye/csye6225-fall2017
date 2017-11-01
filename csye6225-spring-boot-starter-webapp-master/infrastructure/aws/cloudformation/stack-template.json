@@ -359,13 +359,13 @@
          "Properties":{
             "DBSecurityGroupIngress":{
                "EC2SecurityGroupName":{
-                  "Ref":"csye6225webapp"
+                  "Ref":"csye6225webapp1"
                }
             },
             "GroupDescription":"Frontend Access"
          }
       },
-      "csye6225webapp":{
+      "csye6225webapp1":{
          "Type":"AWS::EC2::SecurityGroup",
          "Properties":{
             "GroupDescription":"Enable HTTP access via port 3306",
