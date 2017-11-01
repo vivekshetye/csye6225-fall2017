@@ -262,19 +262,19 @@
 				"apt-get update \n",
 				"apt-get install default-jdk -y \n",
 				"update-alternatives --config java \n",
-				"echo JAVA_HOME='/usr/lib/jvm/java-8-openjdk-amd64/jre/bin/java' > /etc/environment \n",
-				"echo 'export JAVA_HOME' > /etc/environment \n", 
+				"echo JAVA_HOME='/usr/lib/jvm/java-8-openjdk-amd64/jre/bin/java' >> /etc/environment \n",
+				"echo 'export JAVA_HOME' >> /etc/environment \n", 
 				"source /etc/environment \n",
 				"apt-get install curl -y \n",
 				
 	
 				
 				"sudo apt-get install tomcat8 -y \n",
-				"echo '#!/bin/sh' >> /opt/tomcat/bin/setenv.sh \n",
-{"Fn::Join":["",["echo 'JAVA_OPTS=$JAVA_OPTS -Dspring.datasource.url=\"jdbc:mysql://",{"Fn::GetAtt":["DBInstance","Endpoint.Address"]},":3306/csye6225\"\"'>> /opt/tomcat/bin/setenv.sh \n"]]},
-			
-			"echo JAVA_OPTS=”$JAVA_OPTS -Dspring.datasource.username= {rdsParamUserName} >> /opt/tomcat/bin/setenv.sh \n",
-			"echo JAVA_OPTS=”$JAVA_OPTS -Dspring.datasource.password={rdsParamPassword} >> /opt/tomcat/bin/setenv.sh \n",
+				"echo '#!/bin/sh' >> /usr/share/tomcat8/bin/setenv.sh \n",
+{"Fn::Join":["",["echo 'JAVA_OPTS=$JAVA_OPTS -Dspring.datasource.url=\"jdbc:mysql://",{"Fn::GetAtt":["DBInstance","Endpoint.Address"]},":3306/csye6225\"\"'>> /usr/share/tomcat8/bin/setenv.sh \n"]]},
+           
+            "echo 'JAVA_OPTS=”$JAVA_OPTS -Dspring.datasource.username=",{"Ref":"rdsParmUsername"},"' >> /usr/share/tomcat8/bin/setenv.sh \n",
+            "echo 'JAVA_OPTS=”$JAVA_OPTS -Dspring.datasource.password=",{"Ref":"rdsParamPassword"},"' >> /usr/share/tomcat8/bin/setenv.sh \n",
 				"chmod -R 777 bin/* \n",
 	
 				"apt-get install ruby -y\n",
@@ -400,7 +400,7 @@
 "S3Bucket" : {
       "Type": "AWS::S3::Bucket",
       "Properties" : {
-      "BucketName" : "csyemihir"}
+      "BucketName" : "csyevivek"}
 },
 
 
