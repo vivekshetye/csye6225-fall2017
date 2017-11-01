@@ -1,0 +1,21 @@
+{
+"AWSTemplateFormatVersion":"2010-09-09",
+"Description": "Cloud Formation Template",
+"Resources": {
+"DBInstance" : {
+    "Type" : "AWS::RDS::DBInstance",
+    "Properties" : {
+    "AllocatedStorage" :"100",
+    "DBName" : "csye6225",
+    "DBInstanceClass" : "db.t2.medium",
+    "DBInstanceIdentifier" : "csye6225-fall2017",
+    "Engine" : "MySQL",
+    "EngineVersion" : "5.6.35",
+    "MasterUsername" : "csye6225master",
+    "MasterUserPassword" : "csye6225password",
+    "MultiAZ" : "FALSE",
+    "PubliclyAccessible" : "FALSE"
+    }
+}
+}
+}
