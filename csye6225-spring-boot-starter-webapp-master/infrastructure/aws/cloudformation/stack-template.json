@@ -271,7 +271,7 @@
 				
 				"sudo apt-get install tomcat8 -y \n",
 				"echo '#!/bin/sh' >> /usr/share/tomcat8/bin/setenv.sh \n",
-{"Fn::Join":["",["echo 'JAVA_OPTS=$JAVA_OPTS -Dspring.datasource.url=\"jdbc:mysql://",{"Fn::GetAtt":["DBInstance","Endpoint.Address"]},":3306/csye6225\"\"'>> /usr/share/tomcat8/bin/setenv.sh \n"]]},
+{"Fn::Join":["",["echo 'JAVA_OPTS=\"$JAVA_OPTS -Dspring.datasource.url=\"jdbc:mysql://",{"Fn::GetAtt":["DBInstance","Endpoint.Address"]},":3306/csye6225fall2017\"\"'>> /usr/share/tomcat8/bin/setenv.sh \n"]]},
            
             "echo 'JAVA_OPTS=\"$JAVA_OPTS -Dspring.datasource.username=\"",{"Ref":"rdsParamUsername"},"\"\"' >> /usr/share/tomcat8/bin/setenv.sh \n",
             "echo 'JAVA_OPTS=\"$JAVA_OPTS -Dspring.datasource.password=\"",{"Ref":"rdsParamPassword"},"\"\"' >> /usr/share/tomcat8/bin/setenv.sh \n",
