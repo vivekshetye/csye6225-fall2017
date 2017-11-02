@@ -16,10 +16,19 @@ public class AWSConfiguration {
     @Value("${cloud.aws.region}")
     private String region;
 
+
+
     @Bean
-    public AmazonS3Client amazonS3Client() {
-        AmazonS3Client amazonS3Client = new AmazonS3Client(new ProfileCredentialsProvider());
+    public BasicAWSCredentials basicAWSCredentials() {
+        return new BasicAWSCredentials("AKIAJP2M6S2UBJZFDV2A", "ZpuFiCcbVQY2mWHJK2BT3usOUriMYJQ9x/gMN7ea");
+    }
+
+    @Bean
+    public AmazonS3Client amazonS3Client(BasicAWSCredentials awsCredentials) {
+        AmazonS3Client amazonS3Client = new AmazonS3Client(awsCredentials);
         amazonS3Client.setRegion(Region.getRegion(Regions.fromName(region)));
         return amazonS3Client;
+//        AmazonS3 s3Client=new AmazonS3Client();
+//        return s3Client;
     }
 }
