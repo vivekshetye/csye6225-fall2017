@@ -3,6 +3,7 @@ package com.csye6225.demo.service;
 import java.io.File;
 import java.io.IOException;
 
+import com.amazonaws.services.s3.model.DeleteObjectRequest;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -46,6 +47,16 @@ public class S3ServicesImpl implements S3Services {
         } catch (AmazonClientException ace) {
             logger.info("Caught an AmazonClientException: ");
             logger.info("Error Message: " + ace.getMessage());
+        }
+    }
+
+    @Override
+    public void deleteFileFromS3(String key) {
+        try{
+            s3client.deleteObject(new DeleteObjectRequest(bucketName, key));
+        }
+        catch(Exception ex){
+            System.out.println("An error occurred deleting file from S3");
         }
     }
 
