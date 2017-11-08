@@ -29,7 +29,7 @@ public class AWSConfiguration {
     @Bean
     public AmazonS3 amazonS3Client() {
         AmazonS3 amazonS3Client = AmazonS3ClientBuilder.standard().withCredentials(new InstanceProfileCredentialsProvider(false)).build();
-        amazonS3Client.setRegion(Region.getRegion(Regions.fromName(region)));
+//        amazonS3Client.setRegion(Region.getRegion(Regions.fromName(region)));
         return amazonS3Client;
 //        AmazonS3 s3Client=new AmazonS3Client();
 //        return s3Client;
