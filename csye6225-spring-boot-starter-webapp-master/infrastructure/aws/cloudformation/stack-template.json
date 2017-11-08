@@ -50,6 +50,10 @@
         "rdsParamPassword": {   
             "Description": "Rds password",
             "Type": "String"       
+        },
+	"bucketName": {
+            "Description": "DNS name",
+            "Type": "String"           
         }
 },
 
@@ -279,6 +283,11 @@
            
             "echo 'JAVA_OPTS=\"$JAVA_OPTS -Dspring.datasource.username=\"",{"Ref":"rdsParamUsername"},"\"\"' >> /usr/share/tomcat8/bin/setenv.sh \n",
             "echo 'JAVA_OPTS=\"$JAVA_OPTS -Dspring.datasource.password=\"",{"Ref":"rdsParamPassword"},"\"\"' >> /usr/share/tomcat8/bin/setenv.sh \n",
+		"echo 'JAVA_OPTS=\"$JAVA_OPTS -DbucketName=\"",
+		{
+			"Ref": "bucketName"
+		},
+		"\"\"' >> /usr/share/tomcat8/bin/setenv.sh \n",
 				"chmod -R 777 bin/* \n",
 	
 				"apt-get install ruby -y\n",
@@ -410,7 +419,7 @@
 "S3Bucket" : {
       "Type": "AWS::S3::Bucket",
       "Properties" : {
-      "BucketName" : "csye6225cloud"}
+      "BucketName" : {"Ref": "bucketName"}}
 },
 
 
