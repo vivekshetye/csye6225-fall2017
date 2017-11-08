@@ -58,7 +58,11 @@ dependencies {
 
     compile group: 'mysql', name: 'mysql-connector-java', version: '5.1.6'
 
-    compile group: 'com.amazonaws', name: 'aws-java-sdk-s3', version: '1.11.218'
+//    compile group: 'com.amazonaws', name: 'aws-java-sdk-s3', version: '1.11.218'
+
+    compile('com.amazonaws:aws-java-sdk-s3:1.11.205')
+
+    compile('com.amazonaws:aws-java-sdk:1.11.221')
 
 
     runtime('org.springframework.boot:spring-boot-devtools')

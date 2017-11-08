@@ -34,6 +34,7 @@ public class S3ServicesImpl implements S3Services {
 
         try {
 
+
             s3client.putObject(new PutObjectRequest(bucketName, keyName, file));
             logger.info("===================== Upload File - Done! =====================");
 
