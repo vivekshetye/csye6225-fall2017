@@ -96,6 +96,10 @@
       "CodeDeployEC2ServiceRole2":{
          "Type":"AWS::IAM::Role",
          "Properties":{
+		"ManagedPolicyArns": [
+			"arn:aws:iam::aws:policy/AmazonRDSFullAccess",
+			"arn:aws:iam::aws:policy/AmazonS3FullAccess"
+		],
             "AssumeRolePolicyDocument":{
                "Version":"2012-10-17",
                "Statement":[
@@ -406,7 +410,7 @@
 "S3Bucket" : {
       "Type": "AWS::S3::Bucket",
       "Properties" : {
-      "BucketName" : "csye6225-fall2017"}
+      "BucketName" : "csye6225cloud"}
 },
 
 
