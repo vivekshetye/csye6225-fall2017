@@ -25,8 +25,8 @@ public class S3ServicesImpl implements S3Services {
     @Autowired
     private AmazonS3 s3client;
 
-    @Value("${cloud.aws.s3.bucket}")
-    private String bucketName;
+
+    private String bucketName = System.getProperty("bucketName");
 
 
     @Override
