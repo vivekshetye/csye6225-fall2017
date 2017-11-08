@@ -2,6 +2,7 @@ package com.csye6225.demo.controllers;
 
 
 import com.amazonaws.HttpMethod;
+import com.amazonaws.services.s3.AmazonS3;
 import com.amazonaws.services.s3.AmazonS3Client;
 import com.amazonaws.services.s3.model.GeneratePresignedUrlRequest;
 import com.csye6225.demo.model.FileUpload;
@@ -45,7 +46,7 @@ TaskService taskService;
 FileUploadRepository fileUploadRepository;
 
 @Autowired
-private AmazonS3Client s3Client;
+private AmazonS3 s3Client;
 
     @Value("${cloud.aws.s3.bucket}")
     private String bucketName;
