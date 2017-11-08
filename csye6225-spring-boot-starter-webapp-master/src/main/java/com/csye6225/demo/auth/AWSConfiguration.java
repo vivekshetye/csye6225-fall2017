@@ -2,6 +2,7 @@ package com.csye6225.demo.auth;
 
 import com.amazonaws.auth.AWSCredentials;
 import com.amazonaws.auth.BasicAWSCredentials;
+import com.amazonaws.auth.InstanceProfileCredentialsProvider;
 import com.amazonaws.auth.profile.ProfileCredentialsProvider;
 import com.amazonaws.regions.Region;
 import com.amazonaws.regions.Regions;
@@ -24,8 +25,8 @@ public class AWSConfiguration {
     }
 
     @Bean
-    public AmazonS3Client amazonS3Client(BasicAWSCredentials awsCredentials) {
-        AmazonS3Client amazonS3Client = new AmazonS3Client(awsCredentials);
+    public AmazonS3Client amazonS3Client() {
+        AmazonS3Client amazonS3Client = new AmazonS3Client(new InstanceProfileCredentialsProvider(false));
         amazonS3Client.setRegion(Region.getRegion(Regions.fromName(region)));
         return amazonS3Client;
 //        AmazonS3 s3Client=new AmazonS3Client();
