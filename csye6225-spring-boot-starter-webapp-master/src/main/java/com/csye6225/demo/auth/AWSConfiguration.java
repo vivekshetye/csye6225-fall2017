@@ -16,8 +16,7 @@ import org.springframework.context.annotation.Configuration;
 @Configuration
 public class AWSConfiguration {
 
-    @Value("${cloud.aws.region}")
-    private String region;
+    
 
 
 

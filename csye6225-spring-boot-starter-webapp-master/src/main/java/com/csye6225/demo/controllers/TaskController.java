@@ -48,8 +48,8 @@ FileUploadRepository fileUploadRepository;
 @Autowired
 private AmazonS3 s3Client;
 
-    @Value("${cloud.aws.s3.bucket}")
-    private String bucketName;
+
+    private String bucketName = System.getProperty("bucketName");
 
     @Autowired
     private UserService userService;
