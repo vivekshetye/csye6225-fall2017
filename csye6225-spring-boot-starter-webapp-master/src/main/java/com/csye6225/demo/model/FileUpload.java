@@ -20,7 +20,7 @@ public class FileUpload {
     )
     private String fileId;
 
-    @Column(length = 500)
+    @Column
     private String filePath;
 
     @ManyToOne
