@@ -16,21 +16,10 @@ import org.springframework.context.annotation.Configuration;
 @Configuration
 public class AWSConfiguration {
 
-    
-
-
-
-//    @Bean
-//    public BasicAWSCredentials basicAWSCredentials() {
-//        return new BasicAWSCredentials("AKIAJP2M6S2UBJZFDV2A", "ZpuFiCcbVQY2mWHJK2BT3usOUriMYJQ9x/gMN7ea");
-//    }
 
     @Bean
     public AmazonS3 amazonS3Client() {
         AmazonS3 amazonS3Client = AmazonS3ClientBuilder.standard().withCredentials(new InstanceProfileCredentialsProvider(false)).build();
-//        amazonS3Client.setRegion(Region.getRegion(Regions.fromName(region)));
         return amazonS3Client;
-//        AmazonS3 s3Client=new AmazonS3Client();
-//        return s3Client;
     }
 }

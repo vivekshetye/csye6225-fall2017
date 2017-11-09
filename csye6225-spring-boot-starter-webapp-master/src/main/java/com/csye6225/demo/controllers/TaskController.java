@@ -58,6 +58,8 @@ private AmazonS3 s3Client;
     @Autowired
     private S3ServicesImpl s3ServiceImpl;
 
+
+
     @RequestMapping(value="/user/task", method= RequestMethod.POST, produces= "application/json")
     public String createNote(@Valid @RequestBody Task task/*@RequestParam("description") String description*/, HttpServletRequest request,/* @RequestParam("files") MultipartFile[] files,*/ HttpServletResponse response) {
 
