@@ -73,7 +73,7 @@ public class HomeController {
     JsonObject jsonObject = new JsonObject();
     if(user!=null){
       AmazonSNSClient sns = new AmazonSNSClient(new InstanceProfileCredentialsProvider());
-      //sns.setRegion(Region.getRegion(Regions.US_EAST_1));
+      
       String topicArn= sns.createTopic("password_reset").getTopicArn();
       PublishRequest prequest = new PublishRequest(topicArn, user.getEmail());
       PublishResult presult = sns.publish(prequest);
