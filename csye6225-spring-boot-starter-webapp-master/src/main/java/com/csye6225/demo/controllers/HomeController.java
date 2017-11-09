@@ -1,5 +1,11 @@
 package com.csye6225.demo.controllers;
 
+import com.amazonaws.auth.InstanceProfileCredentialsProvider;
+import com.amazonaws.regions.Region;
+import com.amazonaws.regions.Regions;
+import com.amazonaws.services.sns.AmazonSNSClient;
+import com.amazonaws.services.sns.model.PublishRequest;
+import com.amazonaws.services.sns.model.PublishResult;
 import com.csye6225.demo.model.User;
 import com.fasterxml.jackson.databind.util.JSONPObject;
 import com.google.gson.JsonObject;
@@ -60,6 +66,22 @@ public class HomeController {
     }
     return jsonObject.toString();
   }
+
+  @RequestMapping(value = "/resetPassword", method = RequestMethod.POST, produces = "application/json")
+  @ResponseBody
+  public String forgotPassword(@RequestBody User user,HttpServletResponse response) {
+    JsonObject jsonObject = new JsonObject();
+    if(user!=null){
+      AmazonSNSClient sns = new AmazonSNSClient(new InstanceProfileCredentialsProvider());
+      
+      String topicArn= sns.createTopic("password_reset").getTopicArn();
+      PublishRequest prequest = new PublishRequest(topicArn, user.getEmail());
+      PublishResult presult = sns.publish(prequest);
+    }
+    return jsonObject.toString();
+
+  }
+
 
   @RequestMapping(value = "/user/register", method = RequestMethod.POST, produces = "application/json")
   @ResponseBody

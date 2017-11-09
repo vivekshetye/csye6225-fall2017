@@ -50,6 +50,7 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
             .disable()
             .authorizeRequests()
             .antMatchers("/user/register").permitAll()
+            .antMatchers("/resetPassword").permitAll()
             .antMatchers("/").permitAll()
             .antMatchers("/user/task").permitAll()
             .antMatchers("/user/task/{id}/attachments").permitAll()
