@@ -1,0 +1,16 @@
+
+{
+"AWSTemplateFormatVersion":"2010-09-09",
+"Description": "Cloud Formation Template",
+"Resources": {
+
+"MySNSTopic" : {
+   "Type" : "AWS::SNS::Topic",
+   "Properties" : {
+      "TopicName" : "TopicCreation"
+   }
+}
+
+}
+}
+

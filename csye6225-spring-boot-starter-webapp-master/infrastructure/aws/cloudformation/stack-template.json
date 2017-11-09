@@ -421,9 +421,6 @@
       "Properties" : {
       "BucketName" : {"Ref": "bucketName"}}
 },
-
-
-
 "DBInstance" : {
     "Type" : "AWS::RDS::DBInstance",
     "Properties" : {
