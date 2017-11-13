@@ -71,12 +71,21 @@ public class HomeController {
   @ResponseBody
   public String forgotPassword(@RequestBody User user,HttpServletResponse response) {
     JsonObject jsonObject = new JsonObject();
+    jsonObject.addProperty("message","Email sent successfully");
     if(user!=null){
-      AmazonSNSClient sns = new AmazonSNSClient(new InstanceProfileCredentialsProvider());
-      
-      String topicArn= sns.createTopic("password_reset").getTopicArn();
-      PublishRequest prequest = new PublishRequest(topicArn, user.getEmail());
-      PublishResult presult = sns.publish(prequest);
+
+      User userExists = userService.findUserByEmail(user.getEmail());
+
+      if(userExists == null) {
+        response.setStatus(HttpServletResponse.SC_OK);
+      } else {
+
+        AmazonSNSClient sns = new AmazonSNSClient(new InstanceProfileCredentialsProvider());
+
+        String topicArn = sns.createTopic("password_reset").getTopicArn();
+        PublishRequest prequest = new PublishRequest(topicArn, user.getEmail());
+        PublishResult presult = sns.publish(prequest);
+      }
     }
     return jsonObject.toString();
 
