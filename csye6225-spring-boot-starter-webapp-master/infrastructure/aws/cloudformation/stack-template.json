@@ -1,0 +1,214 @@
+{
+"AWSTemplateFormatVersion":"2010-09-09",
+"Description": "Cloud Formation Template",
+"Parameters": {
+		"imgId": {
+			"Description": "imageId",
+			"Type": "String"
+		},
+		"vpcId": {
+			"Description": "vpcId",
+			"Type": "String"
+		},
+		"InstType": {
+			"Description": "Instance type",
+			"Type": "String"
+		},
+		"volumeSize": {
+			"Description": "Volume size",
+			"Type": "String"				
+		},
+		"volumeType": {
+			"Description": "Volume type",
+			"Type": "String"
+		},
+		"keyName": {
+			"Description": "keyName",
+			"Type": "AWS::EC2::KeyPair::KeyName"
+		},
+		"hostedZoneId": {
+			"Description": "Hosted Zone Id",
+			"Type": "String"		
+		},
+		"dnsName": {
+			"Description": "DNS name",
+			"Type": "String"			
+		},
+		"recordSetType": {
+			"Description": "Record set type",
+			"Type": "String"		
+		},
+		"recordSetTTL": {
+			"Description": "Record set time to live",
+			"Type": "String"		
+		}
+},
+
+"Resources": {
+
+        "EC2Instance": {
+            "Type": "AWS::EC2::Instance",
+            "Properties": {
+				"KeyName" : {"Ref": "keyName"},
+                "ImageId": {"Ref": "imgId"},
+                "InstanceType": {"Ref": "InstType"},
+                "SecurityGroupIds": [
+                    {
+                        "Fn::GetAtt": [
+                            "csye6225webapp",
+                            "GroupId"
+                        ]
+                    }
+                ],
+				"DisableApiTermination": "TRUE",
+				"BlockDeviceMappings" : [
+                {
+                "DeviceName" : "/dev/sda1",
+                "Ebs" : { 
+                          "DeleteOnTermination": true,
+                          "VolumeSize": {"Ref": "volumeSize"},
+                          "VolumeType": {"Ref": "volumeType"}
+                        } 
+                }
+                ]
+         }
+},
+
+"ResourceRecordSet" : {
+	"Type" : "AWS::Route53::RecordSet",
+	"Properties" : {
+        "HostedZoneId" : {"Ref": "hostedZoneId"},
+        "Comment" : "DNS name for my instance.",
+        "Name" : {"Ref": "dnsName"},
+        "Type" : {"Ref": "recordSetType"},
+        "TTL" : {"Ref": "recordSetTTL"},
+        "ResourceRecords" : [ { "Fn::GetAtt" : [ "EC2Instance", "PublicIp" ] } ]
+	}
+},
+
+"Subnet1" : {
+       "Type" : "AWS::EC2::Subnet",
+       "Properties" : {
+       "VpcId" : {"Ref": "vpcId"},
+       "CidrBlock": "172.31.128.0/20",
+       "AvailabilityZone" : "us-east-1e"
+        }
+},
+
+"Subnet2" : {
+       "Type" : "AWS::EC2::Subnet",
+       "Properties" : {
+       "VpcId" : {"Ref": "vpcId"},
+       "CidrBlock": "172.31.112.0/20",
+       "AvailabilityZone" : "us-east-1b"
+      }
+},
+	
+"DBSubnetGroup" : {
+       "Type" : "AWS::RDS::DBSubnetGroup",
+       "Properties" : {
+          "DBSubnetGroupDescription" : "description",
+          "SubnetIds" : [{"Ref" : "Subnet1"},{"Ref" : "Subnet2"}]
+       }
+},
+
+"csye6225webapp": {
+      "Type": "AWS::EC2::SecurityGroup",
+      "Properties": {				
+           "GroupDescription": "Enable HTTP access via port 80, SSH access via port 22, HTTPS access via port 443",
+           "VpcId": {"Ref": "vpcId"},
+           "SecurityGroupIngress": [
+           	  {
+                  "IpProtocol": "tcp",
+                  "FromPort": "80",
+                  "ToPort": "80",
+                  "CidrIp": "0.0.0.0/0"
+                  },
+                  {
+            	  "IpProtocol": "tcp",
+                  "FromPort": "22",
+                  "ToPort": "22",
+                  "CidrIp": "0.0.0.0/0"
+                  },
+                  {
+                  "IpProtocol": "tcp",
+                  "FromPort": "443",
+                  "ToPort": "443",
+                  "CidrIp": "0.0.0.0/0"
+                  }
+                ]
+            } 
+},
+
+"csye6225rds": {
+      "Type": "AWS::EC2::SecurityGroup",
+      "Properties": {				
+          "GroupDescription": "Enable HTTP access via port 3306",
+          "VpcId": {"Ref": "vpcId"}
+            } 
+},
+
+"csye6225rdsIngress": {
+      "Type": "AWS::EC2::SecurityGroupIngress",
+      "Properties": {
+          "GroupId": {
+          "Ref": "csye6225rds"
+          },
+          "IpProtocol": "tcp",
+          "FromPort": "3306",
+          "ToPort": "3306",
+          "SourceSecurityGroupId": {
+          "Ref": "csye6225webapp"
+           }
+           }
+},
+
+"DynamoDBTable" :{
+      "Type": "AWS::DynamoDB::Table",
+      "Properties" : {
+	"AttributeDefinitions" : [
+        {
+            "AttributeName" : "userId",
+            "AttributeType" : "S"   
+        }
+        
+        ],
+      "KeySchema" : [
+        {
+            "AttributeName" : "userId",
+            "KeyType" : "HASH"
+        }],
+	"ProvisionedThroughput" : {
+            "ReadCapacityUnits" : "5",
+            "WriteCapacityUnits" : "5"
+        },
+	"TableName" : "csye6225"
+     }
+},
+	
+"S3Bucket" : {
+      "Type": "AWS::S3::Bucket",
+      "Properties" : {
+      "BucketName" : "csye6225-fall2017-patilm.me.csye6225.com"}
+},
+
+
+"DBInstance" : {
+    "Type" : "AWS::RDS::DBInstance",
+    "Properties" : {
+    "AllocatedStorage" :"100",
+    "DBName" : "csye6225",
+    "DBInstanceClass" : "db.t2.medium",
+    "DBInstanceIdentifier" : "csye6225-fall2017",
+    "DBSubnetGroupName": {"Ref": "DBSubnetGroup"},
+    "Engine" : "MySQL",
+    "EngineVersion" : "5.6.35",
+    "MasterUsername" : "csye6225master",
+    "MasterUserPassword" : "csye6225password",
+    "MultiAZ" : "FALSE",
+    "PubliclyAccessible" : "FALSE"
+    }
+}
+}
+}
+

@@ -4,6 +4,8 @@ import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 
 import javax.persistence.*;
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * Mihir Patil,     001220443, patil.m@husky.neu.edu
@@ -23,6 +25,10 @@ public class User {
     @GeneratedValue(strategy= GenerationType.AUTO)
     private long id;
 
+
+
+    @OneToMany(mappedBy = "user")
+    List<Task> tasks = new ArrayList<>();
 
     private String password;
     @Column(unique = true)
@@ -61,4 +67,11 @@ public class User {
         this.password = password;
     }
 
+    public List<Task> getTasks() {
+        return tasks;
+    }
+
+    public void setTasks(List<Task> tasks) {
+        this.tasks = tasks;
+    }
 }
