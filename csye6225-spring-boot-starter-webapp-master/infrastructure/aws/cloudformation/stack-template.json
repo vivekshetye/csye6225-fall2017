@@ -1,4 +1,3 @@
-
 {
 "AWSTemplateFormatVersion":"2010-09-09",
 "Description": "Cloud Formation Template",
@@ -17,7 +16,7 @@
         },
         "volumeSize": {
             "Description": "Volume size",
-            "Type": "String"               
+            "Type": "String"              
         },
         "volumeType": {
             "Description": "Volume type",
@@ -29,60 +28,60 @@
         },
         "hostedZoneId": {
             "Description": "Hosted Zone Id",
-            "Type": "String"       
+            "Type": "String"      
         },
         "dnsName": {
             "Description": "DNS name",
-            "Type": "String"           
+            "Type": "String"          
         },
         "recordSetType": {
             "Description": "Record set type",
-            "Type": "String"       
+            "Type": "String"      
         },
         "recordSetTTL": {
             "Description": "Record set time to live",
-            "Type": "String"       
+            "Type": "String"      
         },
-	"rdsParamUsername": {
+    "rdsParamUsername": {
             "Description": "Rds username",
-            "Type": "String"       
+            "Type": "String"      
         },
-        "rdsParamPassword": {   
+        "rdsParamPassword": {  
             "Description": "Rds password",
-            "Type": "String"       
+            "Type": "String"      
         },
-	"bucketName": {
+    "bucketName": {
             "Description": "DNS name",
-            "Type": "String"           
+            "Type": "String"          
         }
 },
 
 "Resources": {
 
 "RDSConnectPolicy": {
-	"Type":"AWS::IAM::ManagedPolicy",
-	
-	"Properties" : {
-		"PolicyDocument" : {
-	
-	"Version" : "2012-10-17",
-	"Statement" : [
-		{	
-			"Sid":"Stmt1508975155000",
-			"Effect":"Allow",
-			"Action":[
-				"rds-db:connect"			
-			],
-			"Resource": [
+    "Type":"AWS::IAM::ManagedPolicy",
+   
+    "Properties" : {
+        "PolicyDocument" : {
+   
+    "Version" : "2012-10-17",
+    "Statement" : [
+        {   
+            "Sid":"Stmt1508975155000",
+            "Effect":"Allow",
+            "Action":[
+                "rds-db:connect"           
+            ],
+            "Resource": [
                 "*"
             ]
-		}
+        }
 
-		]	
-		
+        ]   
+       
 },
 "Users" : [ "dbuser2"],
-	"ManagedPolicyName": "AWS_RDS_IAM_2"
+    "ManagedPolicyName": "AWS_RDS_IAM_2"
 }
 
 },
@@ -92,7 +91,8 @@
          "Properties":{
             "Roles":[
                {
-                  "Ref":"CodeDeployEC2ServiceRole2"
+                  "Ref":"CodeDeployEC2ServiceRole2",
+		  "Ref": "CloudWatchRole"
                }
             ]
          }
@@ -100,11 +100,11 @@
       "CodeDeployEC2ServiceRole2":{
          "Type":"AWS::IAM::Role",
          "Properties":{
-		"ManagedPolicyArns": [
-			"arn:aws:iam::aws:policy/AmazonRDSFullAccess",
-			"arn:aws:iam::aws:policy/AmazonS3FullAccess",
-			"arn:aws:iam::aws:policy/AmazonSNSFullAccess"
-		],
+        "ManagedPolicyArns": [
+            "arn:aws:iam::aws:policy/AmazonRDSFullAccess",
+            "arn:aws:iam::aws:policy/AmazonS3FullAccess",
+            "arn:aws:iam::aws:policy/AmazonSNSFullAccess"
+        ],
             "AssumeRolePolicyDocument":{
                "Version":"2012-10-17",
                "Statement":[
@@ -124,6 +124,68 @@
             "Path":"/"
          }
       },
+
+ "CloudWatchRole":{
+         "Type":"AWS::IAM::Role",
+         "Properties":{
+            "AssumeRolePolicyDocument":{
+               "Version":"2012-10-17",
+               "Statement":[
+                  {
+                     "Effect":"Allow",
+                     "Principal":{
+                        "Service":[
+                           "ec2.amazonaws.com"
+                        ]
+                     },
+                     "Action":[
+                        "sts:AssumeRole"
+                     ]
+                  }
+               ]
+            },
+            "Path":"/"
+         }
+      },
+
+     "CloudWatchPolicy":{
+         "Type":"AWS::IAM::Policy",
+         "Properties":{
+            "PolicyName":"CloudWatchLogsPolicy",
+            "PolicyDocument":{
+               "Version": "2012-10-17",
+               "Statement": [
+                  {
+                     "Effect": "Allow",
+                     "Action": [
+                        "logs:Create*",
+                        "logs:CreateLogStream",
+                        "logs:PutLogEvents",
+                        "logs:DescribeLogStreams",
+                        "s3:GetObject"
+                     ],
+                     "Resource": [
+                        "arn:aws:logs:*:*:*",
+                        "arn:aws:s3:::*"
+                     ]
+                  }
+               ]
+            },
+            "Roles":[
+               {
+                  "Ref":"CloudWatchRole"
+               }
+            ]
+         }
+      },
+
+         "WebServerLogGroup": {
+            "Type": "AWS::Logs::LogGroup",
+            "Properties": {
+                "RetentionInDays": 7
+            }
+        },
+
       "CodeDeployEC2S33":{
          "Type":"AWS::IAM::Policy",
          "Properties":{
@@ -190,7 +252,7 @@
           ]
         },
         "ManagedPolicyArns":["arn:aws:iam::aws:policy/service-role/AWSLambdaBasicExecutionRole",
-				"arn:aws:iam::aws:policy/AmazonSESFullAccess"],
+                "arn:aws:iam::aws:policy/AmazonSESFullAccess"],
         "RoleName":"Lambda"
       }
 },
@@ -259,15 +321,15 @@
         "EC2Instance": {
             "Type": "AWS::EC2::Instance",
             "Properties": {
-	"IamInstanceProfile" : {
-		"Ref":"insProfile"			
-		},
+    "IamInstanceProfile" : {
+        "Ref":"insProfile"           
+        },
         "KeyName" : {"Ref": "keyName"},
-	"Tags": [
-		{
-			"Key":"course",
-			"Value" : "csye6225"
-		}
+    "Tags": [
+        {
+            "Key":"course",
+            "Value" : "csye6225"
+        }
 ],
                 "ImageId": {"Ref": "imgId"},
                 "InstanceType": {"Ref": "InstType"},
@@ -291,45 +353,86 @@
                 }
                 ],
         "UserData": { "Fn::Base64" : { "Fn::Join" : ["", [
-				"#!/bin/bash -v \n",
-				"apt-get update \n",
-				"apt-get install default-jdk -y \n",
-				"update-alternatives --config java \n",
-				"echo JAVA_HOME='/usr/lib/jvm/java-8-openjdk-amd64/jre/bin/java' >> /etc/environment \n",
-				"echo 'export JAVA_HOME' >> /etc/environment \n", 
-				"source /etc/environment \n",
-				"apt-get install curl -y \n",
-				
-	
-				
-				"sudo apt-get install tomcat8 -y \n",
-				"echo '#!/bin/sh' >> /usr/share/tomcat8/bin/setenv.sh \n",
+                "#!/bin/bash -v \n",
+                "apt-get update \n",
+                "apt-get install default-jdk -y \n",
+                "update-alternatives --config java \n",
+                "echo JAVA_HOME='/usr/lib/jvm/java-8-openjdk-amd64/jre/bin/java' >> /etc/environment \n",
+                "echo 'export JAVA_HOME' >> /etc/environment \n",
+                "source /etc/environment \n",
+                "apt-get install curl -y \n",
+               
+   
+               
+                "sudo apt-get install tomcat8 -y \n",
+                "echo '#!/bin/sh' >> /usr/share/tomcat8/bin/setenv.sh \n",
 {"Fn::Join":["",["echo 'JAVA_OPTS=\"$JAVA_OPTS -Dspring.datasource.url=\"jdbc:mysql://",{"Fn::GetAtt":["DBInstance","Endpoint.Address"]},":3306/csye6225fall2017\"\"'>> /usr/share/tomcat8/bin/setenv.sh \n"]]},
-           
+          
             "echo 'JAVA_OPTS=\"$JAVA_OPTS -Dspring.datasource.username=\"",{"Ref":"rdsParamUsername"},"\"\"' >> /usr/share/tomcat8/bin/setenv.sh \n",
             "echo 'JAVA_OPTS=\"$JAVA_OPTS -Dspring.datasource.password=\"",{"Ref":"rdsParamPassword"},"\"\"' >> /usr/share/tomcat8/bin/setenv.sh \n",
-		"echo 'JAVA_OPTS=\"$JAVA_OPTS -DbucketName=\"",
-		{
-			"Ref": "bucketName"
-		},
-		"\"\"' >> /usr/share/tomcat8/bin/setenv.sh \n",
-				"chmod -R 777 bin/* \n",
-	
-				"apt-get install ruby -y\n",
-				"cd /home/ubuntu \n",
-				"curl -O https://aws-codedeploy-us-east-1.s3.amazonaws.com/latest/install \n",
-				"chmod +x ./install \n",
-				"./install auto"
-				
-				
-				
-		]
-	 	]
-				}
-	
-			}
+        "echo 'JAVA_OPTS=\"$JAVA_OPTS -DbucketName=\"",
+        {
+            "Ref": "bucketName"
+        },
+        "\"\"' >> /usr/share/tomcat8/bin/setenv.sh \n",
+                "chmod -R 777 bin/* \n",
+   
+                "apt-get install ruby -y\n",
+                "cd /home/ubuntu \n",
+                "curl -O https://aws-codedeploy-us-east-1.s3.amazonaws.com/latest/install \n",
+                "chmod +x ./install \n",
+                "./install auto",
+"cd /home/ubuntu \n",
+                              "curl -O https://aws-codedeploy-us-east-1.s3.amazonaws.com/latest/install \n",
+                              "chmod +x ./install \n",
+                              "./install auto \n",
+                              "apt-get update -y \n",
+                              "apt-get install python -y \n",
+                  "echo '[general]' > /tmp/apacheaccess.conf \n",
+                 
+                  "echo 'state_file= /var/awslogs/state' >> /tmp/apacheaccess.conf \n",
+                  "echo '[/var/logs/awslogs.log]' >> /tmp/apacheaccess.conf \n",
+                  "echo 'datetime_format = %d/%b/%Y:%H:%M:%S' >> /tmp/apacheaccess.conf \n",
+                  "echo 'file = /var/logs/awslogs.log' >> /tmp/apacheaccess.conf \n",
+                "echo 'buffer_duration = 5000' >> /tmp/apacheaccess.conf \n",
+                "echo 'log_stream_name = test' >> /tmp/apacheaccess.conf \n",
+                "echo 'initial_position = start_of_file' >> /tmp/apacheaccess.conf \n",
+                "echo 'log_group_name = \"",
+                              {
+                                 "Ref":"WebServerLogGroup"
+                              },
+                              "\"\"' >> /tmp/apacheaccess.conf \n",
+               
+               
+                              "wget https://s3.amazonaws.com/aws-cloudwatch/downloads/latest/awslogs-agent-setup.py \n",
+                              "python awslogs-agent-setup.py -n -r ", { "Ref" : "AWS::Region" }, " -c /tmp/apacheaccess.conf || error_exit 'Failed to run CloudWatch Logs agent setup'\n",
+                  "cd /etc/systemd/system \n",
+                       
+                        "echo '[Unit]' > /etc/systemd/system/awslogs.service \n",
+                        "echo 'Description=Service for CloudWatch Logs agent' >> /etc/systemd/system/awslogs.service \n",
+                        "echo 'After=rc-local.service' >> /etc/systemd/system/awslogs.service \n",
+
+                        "echo '[Service]' >> /etc/systemd/system/awslogs.service \n",
+                        "echo 'Type=simple' >> /etc/systemd/system/awslogs.service \n",
+                        "echo 'Restart=always' >> /etc/systemd/system/awslogs.service \n",
+                        "echo 'KillMode=process' >> /etc/systemd/system/awslogs.service \n",
+                        "echo 'TimeoutSec=infinity' >> /etc/systemd/system/awslogs.service \n",
+                        "echo 'PIDFile=/var/awslogs/state/awslogs.pid' >> /etc/systemd/system/awslogs.service \n",
+                        "echo 'ExecStart=/var/awslogs/bin/awslogs-agent-launcher.sh --start --background --pidfile $PIDFILE --user awslogs --chuid awslogs &amp;' >> /etc/systemd/system/awslogs.service \n",
+
+                        "echo '[Install]' >> /etc/systemd/system/awslogs.service \n",
+                        "echo 'WantedBy=multi-user.target' >> /etc/systemd/system/awslogs.service \n",
+            "systemctl start awslogs.service \n"
+               
+               
+               
+        ]
+         ]
+                }
+   
+            }
          }
-       
+      
 },
 
 "MySNSTopic" : {
@@ -368,7 +471,7 @@
        "AvailabilityZone" : "us-east-1b"
       }
 },
-   
+  
 "DBSubnetGroup" : {
        "Type" : "AWS::RDS::DBSubnetGroup",
        "Properties" : {
@@ -379,7 +482,7 @@
 
 "csye6225webapp": {
       "Type": "AWS::EC2::SecurityGroup",
-      "Properties": {               
+      "Properties": {              
            "GroupDescription": "Enable HTTP access via port 80, SSH access via port 22, HTTPS access via port 443",
            "VpcId": {"Ref": "vpcId"},
            "SecurityGroupIngress": [
@@ -401,29 +504,29 @@
                   "ToPort": "443",
                   "CidrIp": "0.0.0.0/0"
                   },
-		 {
-		"IpProtocol": "tcp",
+         {
+        "IpProtocol": "tcp",
                   "FromPort": "8080",
                   "ToPort": "8080",
                   "CidrIp": "0.0.0.0/0"
-		 }
+         }
                 ]
             }
 },
  "RDSSecurityGroup": {
-	      "Type": "AWS::EC2::SecurityGroup",
-	      "Properties": {
-	        "GroupDescription": "Open database for access",
-	        "GroupName": "csye6225rds",
-	        "SecurityGroupIngress": [{
-	          "IpProtocol": "tcp",
-	          "FromPort": "3306",
-	          "ToPort": "3306",
-	          "SourceSecurityGroupId": {
-	            "Fn::GetAtt": ["csye6225webapp", "GroupId"]
-	          }
-	        }]
-	      }
+          "Type": "AWS::EC2::SecurityGroup",
+          "Properties": {
+            "GroupDescription": "Open database for access",
+            "GroupName": "csye6225rds",
+            "SecurityGroupIngress": [{
+              "IpProtocol": "tcp",
+              "FromPort": "3306",
+              "ToPort": "3306",
+              "SourceSecurityGroupId": {
+                "Fn::GetAtt": ["csye6225webapp", "GroupId"]
+              }
+            }]
+          }
 },
 "DynamoDBTable" :{
       "Type": "AWS::DynamoDB::Table",
@@ -431,9 +534,8 @@
     "AttributeDefinitions" : [
         {
             "AttributeName" : "userId",
-            "AttributeType" : "S"  
-        }
-       
+            "AttributeType" : "S" 
+        }     
         ],
       "KeySchema" : [
         {
@@ -444,10 +546,14 @@
             "ReadCapacityUnits" : "5",
             "WriteCapacityUnits" : "5"
         },
+"TimeToLiveSpecification": {
+    "AttributeName": "TTL",
+    "Enabled": "TRUE"
+  },
     "TableName" : "csye6225fall2017"
      }
 },
-   
+  
 "S3Bucket" : {
       "Type": "AWS::S3::Bucket",
       "Properties" : {
@@ -462,8 +568,8 @@
     "DBInstanceIdentifier" : "csye6225-fall2017",
     "DBSubnetGroupName": {"Ref": "DBSubnetGroup"},
      "VPCSecurityGroups": [{
-	          "Fn::GetAtt": ["RDSSecurityGroup", "GroupId"]
-	        }],
+              "Fn::GetAtt": ["RDSSecurityGroup", "GroupId"]
+            }],
     "Engine" : "MySQL",
     "MasterUsername" : {"Ref" : "rdsParamUsername"},
     "MasterUserPassword" : {"Ref" : "rdsParamPassword"},
@@ -473,4 +579,3 @@
 }
 }
 }
-
