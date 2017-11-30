@@ -53,10 +53,7 @@
     "bucketName": {
             "Description": "DNS name",
             "Type": "String"          
-        },
- 	"originalDomain":{
- 			"Type":"String"
- 		}
+        }
 },
 
 "Resources": {
@@ -321,13 +318,18 @@
       },
 
         "EC2Instance": {
-            "Type":"AWS::AutoScaling::LaunchConfiguration",
+            "Type": "AWS::EC2::Instance",
             "Properties": {
     "IamInstanceProfile" : {
         "Ref":"insProfile"           
         },
         "KeyName" : {"Ref": "keyName"},
-
+    "Tags": [
+        {
+            "Key":"course",
+            "Value" : "csye6225"
+        }
+],
                 "ImageId": {"Ref": "imgId"},
                 "InstanceType": {"Ref": "InstType"},
                 "SecurityGroupIds": [
@@ -338,6 +340,7 @@
                         ]
                     }
                 ],
+        "DisableApiTermination": "TRUE",
         "BlockDeviceMappings" : [
                 {
                 "DeviceName" : "/dev/sda1",
@@ -424,94 +427,23 @@
          }    
 },
 
-
- "MyDNSRecord":{
- "Type":"AWS::Route53::RecordSetGroup",
- "Properties":{
-				"RecordSets" : [
-					{
-						"Name" : {"Ref":"dnsName"},
-						"Type" : "A",
-						"AliasTarget" : {
-							"HostedZoneId" : { "Fn::GetAtt" : ["ApplicationLoadBalancer", "CanonicalHostedZoneID"] },
-							"DNSName" : { "Fn::GetAtt" : ["ApplicationLoadBalancer","DNSName"] }
-				 		}
-				 	}
-				 ],
-					
-				 "Comment":"DNS name for my instance.",
-				 "HostedZoneName":{"Ref":"originalDomain"}
- 			}
- },
-
- "MyServerGroup": {
-		"Type": "AWS::AutoScaling::AutoScalingGroup",
-		"Properties": {
-			"VPCZoneIdentifier" :[{"Ref": "Subnet1"},{"Ref": "Subnet2"},{"Ref": "Subnet3"}],
-			"LaunchConfigurationName": {"Ref": "EC2Instance"},
-			"MinSize": "3",
-			"MaxSize": "3",
-			"TargetGroupARNs": [{"Ref": "ALBTargetGroup"}]
-		}
-	},
-
-
-	"ALBListener": {
-		"Type": "AWS::ElasticLoadBalancingV2::Listener",
-		"Properties": {
-			"Certificates":[{"CertificateArn" :"arn:aws:acm:us-east-1:644761415555:certificate/14d7f790-6d0c-477c-983a-40f8d866e60a"}], 
-			"DefaultActions": [{
-					"Type": "forward",
-					"TargetGroupArn": {"Ref": "ALBTargetGroup"}
-				}],
-			"LoadBalancerArn": {"Ref": "ApplicationLoadBalancer"},
-			"Port": "443",
-			"Protocol": "HTTPS"
-			}
-	},
-
-"ApplicationLoadBalancer": {
-	"Type": "AWS::ElasticLoadBalancingV2::LoadBalancer",
-	"Properties": {
-		"Scheme": "internal",
-		"Tags": [{
-			"Key": "name",
-			"Value": "csye6225"
-		}],
-		"Type":"application",
-		"IpAddressType":"ipv4",
-		"Subnets": [{"Ref": "Subnet1"},{"Ref": "Subnet2"},{"Ref": "Subnet3"}],
-		"SecurityGroups": [{"Ref": "csye6225webapp"}]
-	}
-},
-
-
-"ALBTargetGroup": {
-	"Type": "AWS::ElasticLoadBalancingV2::TargetGroup",
-	"Properties": {
-		"Tags": [{
-			"Key": "name",
-			"Value": "csye6225"
-		}],
-		"HealthCheckIntervalSeconds": 60,
-		"UnhealthyThresholdCount": 10,
-		"HealthCheckPath": "/",
-		"Name": "CsyeTargetGroup",
-		"TargetType": "instance",
-		"Port": 443,
-		"Protocol": "HTTPS",
-		"VpcId": {"Ref": "vpcId"}
-	
-	},
-	"DependsOn": [ "ApplicationLoadBalancer" ]
-},
-
-
 "MySNSTopic" : {
    "Type" : "AWS::SNS::Topic",
    "Properties" : {
       "TopicName" : "password_reset"
 }
+},
+
+"ResourceRecordSet" : {
+    "Type" : "AWS::Route53::RecordSet",
+    "Properties" : {
+        "HostedZoneId" : {"Ref": "hostedZoneId"},
+        "Comment" : "DNS name for my instance.",
+        "Name" : {"Ref": "dnsName"},
+        "Type" : {"Ref": "recordSetType"},
+        "TTL" : {"Ref": "recordSetTTL"},
+        "ResourceRecords" : [ { "Fn::GetAtt" : [ "EC2Instance", "PublicIp" ] } ]
+    }
 },
 
 "Subnet1" : {
@@ -531,21 +463,12 @@
        "AvailabilityZone" : "us-east-1b"
       }
 },
-
-"Subnet3" : {
-       "Type" : "AWS::EC2::Subnet",
-       "Properties" : {
-       "VpcId" : {"Ref": "vpcId"},
-       "CidrBlock": "172.31.100.0/20",
-       "AvailabilityZone" : "us-east-1f"
-      }
-},
   
 "DBSubnetGroup" : {
        "Type" : "AWS::RDS::DBSubnetGroup",
        "Properties" : {
           "DBSubnetGroupDescription" : "description",
-          "SubnetIds" : [{"Ref" : "Subnet1"},{"Ref" : "Subnet2"},{"Ref" : "Subnet3"}]
+          "SubnetIds" : [{"Ref" : "Subnet1"},{"Ref" : "Subnet2"}]
        }
 },
 
