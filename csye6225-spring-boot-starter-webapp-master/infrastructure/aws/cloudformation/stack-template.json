@@ -124,68 +124,64 @@
             "Path":"/"
          }
       },
-
- "CloudWatchRole":{
-         "Type":"AWS::IAM::Role",
-         "Properties":{
-            "AssumeRolePolicyDocument":{
-               "Version":"2012-10-17",
-               "Statement":[
-                  {
-                     "Effect":"Allow",
-                     "Principal":{
-                        "Service":[
-                           "ec2.amazonaws.com"
-                        ]
-                     },
-                     "Action":[
-                        "sts:AssumeRole"
-                     ]
-                  }
-               ]
-            },
-            "Path":"/"
-         }
-      },
-
-     "CloudWatchPolicy":{
-         "Type":"AWS::IAM::Policy",
-         "Properties":{
-            "PolicyName":"CloudWatchLogsPolicy",
-            "PolicyDocument":{
-               "Version": "2012-10-17",
-               "Statement": [
-                  {
-                     "Effect": "Allow",
-                     "Action": [
-                        "logs:Create*",
-                        "logs:CreateLogStream",
-                        "logs:PutLogEvents",
-                        "logs:DescribeLogStreams",
-                        "s3:GetObject"
-                     ],
-                     "Resource": [
-                        "arn:aws:logs:*:*:*",
-                        "arn:aws:s3:::*"
-                     ]
-                  }
-               ]
-            },
-            "Roles":[
-               {
-                  "Ref":"CloudWatchRole"
-               }
-            ]
-         }
-      },
-
-         "WebServerLogGroup": {
+"CloudWatchRole": {
+      "Type": "AWS::IAM::Role",
+      "Properties": {
+        "AssumeRolePolicyDocument": {
+          "Version": "2012-10-17",
+          "Statement": [
+            {
+              "Effect": "Allow",
+              "Principal": {
+                "Service": [
+                  "ec2.amazonaws.com"
+                ]
+              },
+              "Action": [
+                "sts:AssumeRole"
+              ]
+            }
+          ]
+        },
+        "Path": "/"
+      }
+    },
+    "CloudWatchPolicy": {
+      "Type": "AWS::IAM::Policy",
+      "Properties": {
+        "PolicyName": "CloudWatchLogsPolicy",
+        "PolicyDocument": {
+          "Version": "2012-10-17",
+          "Statement": [
+            {
+              "Effect": "Allow",
+              "Action": [
+                "logs:Create*",
+                "logs:CreateLogStream",
+                "logs:PutLogEvents",
+                "logs:DescribeLogStreams",
+                "s3:GetObject"
+              ],
+              "Resource": [
+                "arn:aws:logs:*:*:*",
+                "arn:aws:s3:::*"
+              ]
+            }
+          ]
+        },
+        "Roles": [
+          {
+            "Ref": "CloudWatchRole"
+          }
+        ]
+      }
+    },
+      "WebServerLogGroup": {
             "Type": "AWS::Logs::LogGroup",
             "Properties": {
                 "RetentionInDays": 7
             }
         },
-
       "CodeDeployEC2S33":{
          "Type":"AWS::IAM::Policy",
          "Properties":{
